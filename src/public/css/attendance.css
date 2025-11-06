@@ -1,0 +1,77 @@
+.attendance-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* ヘッダー下から配置 */
+    height: calc(100vh - 80px);
+    /* ヘッダー除く全高 */
+    padding-top: 160px;
+    /* Figmaの上余白 約441pxから調整 */
+    background-color: #f9f9f9;
+    color: #000;
+    text-align: center;
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    box-sizing: border-box;
+}
+
+/* ==== 勤務状態（バッジ） ==== */
+.attendance-status {
+    font-size: 14px;
+    color: #777;
+    background-color: #eee;
+    border-radius: 20px;
+    padding: 6px 16px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* ==== 日付 ==== */
+.attendance-date {
+    font-size: 18px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 12px;
+}
+
+/* ==== 時刻（中央の大きな数字） ==== */
+.attendance-time {
+    font-size: 80px;
+    /* Figma: 80px */
+    font-weight: 700;
+    /* Bold */
+    line-height: 100%;
+    color: #000;
+    margin-bottom: 40px;
+}
+
+/* ==== ボタンエリア ==== */
+.attendance-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+/* ==== 出勤ボタン ==== */
+.btn-start {
+    width: 120px;
+    height: 48px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-start:hover {
+    opacity: 0.85;
+}
+
+/* ==== メッセージ（勤務終了など） ==== */
+.attendance-message {
+    font-size: 18px;
+    color: #333;
+    margin-top: 24px;
+}

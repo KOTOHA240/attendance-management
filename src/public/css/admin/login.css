@@ -1,0 +1,98 @@
+.login-container {
+    width: 680px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.login-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    text-align: left;
+}
+
+.btn-login {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 680px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.error {
+    color: red !important;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* PC（幅1400px〜1540px） */
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .login-container {
+        width: 700px;
+        /* PC向けに横幅を広めに */
+        margin: 80px auto;
+    }
+
+    .btn-login {
+        width: 700px;
+        font-size: 18px;
+        /* ボタン文字を少し大きく */
+    }
+}
+
+/* タブレット（幅768px〜850px） */
+@media (min-width: 768px) and (max-width: 850px) {
+    .login-container {
+        width: 90%;
+        /* タブレットは画面幅に合わせて可変 */
+        margin: 40px auto;
+    }
+
+    .btn-login {
+        width: 100%;
+        /* ボタンは横幅いっぱい */
+        font-size: 16px;
+    }
+}
+
+/* PCサイズ（1400px～1540px） */
+@media (min-width: 1400px) and (max-width: 1540px) {
+
+    .login-container,
+    .register-container {
+        width: 700px;
+        /* PCでは少し余裕を持たせる */
+    }
+}
+
+/* タブレットサイズ（768px～850px） */
+@media (min-width: 768px) and (max-width: 850px) {
+
+    .login-container,
+    .register-container {
+        width: 90%;
+        /* タブレットでは幅を画面に合わせる */
+        margin: 20px auto;
+        padding: 20px;
+    }
+}

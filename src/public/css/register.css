@@ -1,0 +1,137 @@
+.register-container {
+    width: 680px;
+    height: 678px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #fff;
+    text-align: center;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.register-button {
+    width: 100%;
+    margin-top: 20px;
+    height: 45px;
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-link {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.login-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* PC（幅1400px〜1540px） */
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .register-container {
+        width: 720px;
+        /* PC向けは少し広め */
+        margin: 60px auto;
+        padding: 50px;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .register-button {
+        width: 720px;
+        font-size: 18px;
+    }
+}
+
+/* タブレット（幅768px〜850px） */
+@media (min-width: 768px) and (max-width: 850px) {
+    .register-container {
+        width: 90%;
+        /* 画面幅に合わせる */
+        margin: 30px auto;
+        padding: 30px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .form-group input {
+        font-size: 13px;
+        /* 入力欄は少しコンパクト */
+        height: 38px;
+    }
+
+    .register-button {
+        width: 100%;
+        /* ボタンは横幅いっぱい */
+        font-size: 16px;
+    }
+}
+
+/* PCサイズ（1400px～1540px） */
+@media (min-width: 1400px) and (max-width: 1540px) {
+
+    .login-container,
+    .register-container {
+        width: 700px;
+        /* PCでは少し余裕を持たせる */
+    }
+}
+
+/* タブレットサイズ（768px～850px） */
+@media (min-width: 768px) and (max-width: 850px) {
+
+    .login-container,
+    .register-container {
+        width: 90%;
+        /* タブレットでは幅を画面に合わせる */
+        margin: 20px auto;
+        padding: 20px;
+    }
+}
