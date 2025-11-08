@@ -29,7 +29,13 @@ class AttendanceController extends Controller
 
     public function list()
     {
-        $attendances = Attendance::where('user_id', auth()->id())->get();
+        $user = Auth::user();
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->orderBy('date')
+            ->get();
+
         return view('attendance.list', compact('attendances'));
     }
 
@@ -49,5 +55,14 @@ class AttendanceController extends Controller
         $user->save();
 
         return redirect()->route('attendance.index');
+    }
+
+    public function detail($id)
+    {
+        $attendance = Attendance::where('user_id', auth()->id())
+            ->where('id', $id)
+            ->firstOrFail();
+
+        return view('attendance.detail', compact('attendance'));
     }
 }

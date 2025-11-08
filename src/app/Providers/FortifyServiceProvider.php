@@ -45,8 +45,7 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.verify-email');
         });
 
-        Fortify::authenticateUsing(function ($request) {
-            $request->validated();
+        Fortify::authenticateUsing(function (Request $request) {
 
             if (request()->is('admin*')) {
                 // 管理者ログイン処理
@@ -60,18 +59,9 @@ class FortifyServiceProvider extends ServiceProvider
 
                 Auth::guard('admin')->login($admin);
                 return $admin;
-            } else {
-                // 一般ユーザーログイン処理
-                $user = \App\Models\User::where('email', $request->email)->first();
-
-                if (! $user || ! \Hash::check($request->password, $user->password)) {
-                    throw ValidationException::withMessages([
-                        'email' => ['ログイン情報が登録されていません。'],
-                    ]);
-                }
-
-                return $user;
             }
+
+            return null;
         });
     }
 }

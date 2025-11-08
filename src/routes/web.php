@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\LoginController as AdminLoginController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StampCorrectionRequestController;
@@ -34,3 +35,5 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
 Route::get('/admin/login', function () {
     return view('admin.login');
 })->name('admin.login');
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
