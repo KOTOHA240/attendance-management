@@ -543,6 +543,7 @@ class ComposerStaticInitc61ff82cbf0142a401a48a8161e1595a
         'App\\Http\\Controllers\\AttendanceController' => __DIR__ . '/../..' . '/app/Http/Controllers/AttendanceController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/LoginController.php',
+        'App\\Http\\Controllers\\StampCorrectionRequestController' => __DIR__ . '/../..' . '/app/Http/Controllers/StampCorrectionRequestController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',

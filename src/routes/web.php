@@ -25,7 +25,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/attendance/start', [AttendanceController::class, 'startWork'])->name('attendance.start');
     Route::post('/attendance/leave', [AttendanceController::class, 'leaveWork'])->name('attendance.leave');
     Route::post('/attendance/break', [AttendanceController::class, 'startBreak'])->name('attendance.break');
+    Route::post('/attendance/break/end', [AttendanceController::class, 'endBreak'])->name('attendance.endBreak');
     Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'list'])->name('stamp_correction_request.list');
+    Route::get('/stamp_correction_request/detail/{id}', [StampCorrectionRequestController::class, 'detail'])->name('stamp_correction_request.detail');
+    Route::get('/attendance/detail/{date}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+    Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 });
 
 Route::prefix('admin')->middleware('auth:admin')->group(function () {

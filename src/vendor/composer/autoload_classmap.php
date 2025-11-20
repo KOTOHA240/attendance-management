@@ -19,6 +19,7 @@ return array(
     'App\\Http\\Controllers\\AttendanceController' => $baseDir . '/app/Http/Controllers/AttendanceController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\LoginController' => $baseDir . '/app/Http/Controllers/LoginController.php',
+    'App\\Http\\Controllers\\StampCorrectionRequestController' => $baseDir . '/app/Http/Controllers/StampCorrectionRequestController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',

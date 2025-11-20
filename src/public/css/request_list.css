@@ -1,0 +1,113 @@
+/* コンテナ全体 */
+.request-list-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Inter', 'Yu Gothic', sans-serif;
+}
+
+/* タイトル行（縦棒＋タイトル） */
+.title-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+/* 縦棒（Figma指定：幅40px、高さ0px、ボーダー8px、回転90°） */
+.title-bar {
+    width: 40px;
+    height: 0;
+    border-top: 8px solid #000;
+    transform: rotate(90deg);
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+/* タイトル（Figma指定） */
+.page-title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: 0;
+    width: 120px;
+    height: 36px;
+    color: #333;
+    margin: 0;
+}
+
+/* タブリンク */
+.tab-selector {
+    display: flex;
+    gap: 30px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    padding-left: 5px;
+}
+
+.tab {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.tab:hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #999;
+}
+
+.tab.active {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* タブ下の長い下線（表と同じ幅） */
+.tab-underline {
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    margin-bottom: 16px;
+}
+
+/* 表スタイル */
+.request-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.request-table th,
+.request-table td {
+    padding: 10px 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.request-table th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    color: #444;
+}
+
+.request-table td {
+    color: #333;
+}
+
+/* 詳細リンク */
+.request-table a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.request-table a:hover {
+    text-decoration: none;
+    color: #0056b3;
+}

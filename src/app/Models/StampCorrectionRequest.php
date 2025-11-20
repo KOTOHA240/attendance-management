@@ -11,13 +11,19 @@ class StampCorrectionRequest extends Model
 
     protected $fillable = [
         'user_id',
-        'status',
+        'attendance_id',
+        'target_date',
         'reason',
-        'requested_at',
+        'is_approved',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function attendance()
+    {
+        return $this->belongsTo(Attendance::class);
     }
 }

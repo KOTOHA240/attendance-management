@@ -46,27 +46,68 @@
 }
 
 /* ==== ボタンエリア ==== */
+/* ==== ボタンエリア ==== */
 .attendance-buttons {
     display: flex;
     justify-content: center;
+    gap: 16px;
+    /* ボタン間の余白 */
+    flex-wrap: wrap;
+    /* モバイル対応で折り返し可能に */
 }
 
-/* ==== 出勤ボタン ==== */
-.btn-start {
+/* ==== 共通ボタンスタイル ==== */
+.attendance-buttons button {
     width: 120px;
     height: 48px;
     font-size: 18px;
     font-weight: 600;
-    background-color: #000;
-    color: #fff;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: 0.2s;
 }
 
+/* ==== 出勤ボタン ==== */
+.btn-start {
+    background-color: #000;
+    color: #fff;
+}
+
 .btn-start:hover {
     opacity: 0.85;
+}
+
+/* ==== 退勤ボタン ==== */
+.btn-leave {
+    background-color: #333;
+    color: #fff;
+}
+
+.btn-leave:hover {
+    opacity: 0.85;
+}
+
+/* ==== 休憩入ボタン ==== */
+.btn-break {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.btn-break:hover {
+    background-color: #f0f0f0;
+}
+
+/* ==== 休憩戻ボタン ==== */
+.btn-break-end {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.btn-break-end:hover {
+    background-color: #f0f0f0;
 }
 
 /* ==== メッセージ（勤務終了など） ==== */
@@ -74,4 +115,11 @@
     font-size: 18px;
     color: #333;
     margin-top: 24px;
+}
+
+.finished-message {
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 10px;
+    text-align: center;
 }
