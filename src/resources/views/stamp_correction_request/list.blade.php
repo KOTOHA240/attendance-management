@@ -39,7 +39,7 @@
                     <td>{{ \Carbon\Carbon::parse($request->target_date)->format('Y/m/d') }}</td>
                     <td>{{ $request->reason }}</td>
                     <td>{{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}</td>
-                    <td><a href="{{ route('stamp_correction_request.detail', $request->id) }}">詳細</a></td>
+                    <td><a href="{{ route('attendance.detail', \Carbon\Carbon::parse($request->target_date)->format('Y-m-d')) }}" class="detail-link">詳細</a></td>
                 </tr>
             @empty
                 <tr><td colspan="6">申請はありません。</td></tr>

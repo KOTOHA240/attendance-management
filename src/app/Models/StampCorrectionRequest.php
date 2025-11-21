@@ -26,4 +26,9 @@ class StampCorrectionRequest extends Model
     {
         return $this->belongsTo(Attendance::class);
     }
+
+    public function getStatusLabelAttribute()
+    {
+        return $this->is_approved ? '承認済み' : '承認待ち';
+    }
 }
