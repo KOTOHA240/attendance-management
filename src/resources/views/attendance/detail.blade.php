@@ -5,13 +5,9 @@
 @endsection
 
 @section('content')
+<h2 class="page-title">勤怠詳細</h2>
+
 <div class="attendance-detail-container">
-    <h2 class="page-title">勤怠詳細</h2>
-
-    @if ($attendance->is_pending)
-        <p class="warning-text">※承認待ちのため修正はできません。</p>
-    @endif
-
     <form method="POST" action="{{ $attendance->id ? route('attendance.update', $attendance->id) : route('attendance.store') }}">
         @csrf
         @if ($attendance->id)
@@ -22,19 +18,23 @@
 
 
         <div class="detail-row">
-            <label>名前：</label>
+            <label>名前</label>
             <span>{{ $user->name }}</span>
         </div>
 
         <div class="detail-row">
-            <label>日付：</label>
+            <label>日付</label>
             <span>{{ \Carbon\Carbon::parse($attendance->date)->format('Y年n月j日') }}</span>
         </div>
 
         <div class="detail-row">
-            <label>出勤・退勤：</label>
+            <label>出勤・退勤</label>
             @if ($attendance->is_pending)
-                <span>{{ $attendance->started_at }} ～ {{ $attendance->left_at }}</span>
+                <span>
+                    {{ $attendance->started_at ? $attendance->started_at->format('H:i') : '--:--' }}
+                    ～
+                    {{ $attendance->left_at ? $attendance->left_at->format('H:i') : '--:--' }}
+                </span>
             @else
                 <div class="time-pair">
                     <input type="time" name="started_at" value="{{ $attendance->started_at ? $attendance->started_at->format('H:i') : '' }}">
@@ -44,31 +44,31 @@
             @endif
         </div>
 
-        <div class="detail-row">
-            <label>休憩：</label>
-            @php
-                $breaks = $attendance->breaks ?? [];
-                $maxBreaks = count($breaks) + 1;
-            @endphp
+        @php
+            $breaks = $attendance->breaks ?? [];
+            $maxBreaks = count($breaks) + 1;
+        @endphp
 
-            @for ($i = 0; $i < $maxBreaks; $i++)
-                <div class="break-row">
-                    <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
+        @for ($i = 0; $i < $maxBreaks; $i++)
+            <div class="detail-row">
+                <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
+                <div class="time-pair">
                     <input type="time" name="breaks[{{ $i }}][start]" value="{{ $breaks[$i]['start'] ?? '' }}">
-                    ～
+                    <span>～</span>
                     <input type="time" name="breaks[{{ $i }}][end]" value="{{ $breaks[$i]['end'] ?? '' }}">
                 </div>
-            @endfor
-        </div>
+            </div>
+        @endfor
 
         <div class="detail-row">
-            <label>備考：</label>
+            <label>備考</label>
             @if ($attendance->is_pending)
                 <span>{{ $attendance->note }}</span>
             @else
                 <textarea name="note">{{ $attendance->note }}</textarea>
             @endif
         </div>
+
 
         @unless ($attendance->is_pending)
             <div class="button-row">
@@ -77,6 +77,12 @@
         @endunless
     </form>
 </div>
+
+
+
+@if ($attendance->is_pending)
+        <p class="warning-text">※承認待ちのため修正はできません。</p>
+@endif
 
 <script>
     document.getElementById('add-break')?.addEventListener('click', function () {

@@ -187,8 +187,11 @@ class AttendanceController extends Controller
         }
 
         // 勤怠データを更新（バリデーションは省略）
-        $attendance->started_at = $request->input('started_at');
-        $attendance->left_at = $request->input('left_at');
+        $attendance->started_at = $request->input('started_at')
+            ? Carbon::createFromFormat('H:i', $request->input('started_at'))->setDateFrom($attendance->date) : null;
+        $attendance->left_at = $request->input('left_at')
+            ? Carbon::createFromFormat('H:i', $request->input('left_at'))->setDateFrom($attendance->date)
+            : null;
         $attendance->note = $request->input('note');
         $attendance->breaks = $request->input('breaks', []);
         $attendance->is_pending = true;
@@ -213,8 +216,11 @@ class AttendanceController extends Controller
         $attendance = new Attendance();
         $attendance->user_id = auth()->id();
         $attendance->date = $request->input('date');
-        $attendance->started_at = $request->input('started_at'); // 統一
-        $attendance->left_at = $request->input('left_at');       // 統一
+        $attendance->started_at = $request->input('started_at')
+            ? Carbon::createFromFormat('H:i', $request->input('started_at'))->setDateFrom($attendance->date) : null; // 統一
+        $attendance->left_at = $request->input('left_at')
+            ? Carbon::createFromFormat('H:i', $request->input('left_at'))->setDateFrom($attendance->date)
+            : null;// 統一
         $attendance->note = $request->input('note');
         $attendance->breaks = $request->input('breaks', []);
         $attendance->is_pending = true;

@@ -103,11 +103,11 @@
 
 /* 詳細リンク */
 .request-table a {
-    color: #007bff;
+    color: black;
     text-decoration: underline;
 }
 
 .request-table a:hover {
     text-decoration: none;
-    color: #0056b3;
+    color: black;
 }

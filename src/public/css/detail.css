@@ -1,10 +1,23 @@
 /* ページタイトル（白枠の外） */
 .page-title {
+    max-width: 600px;
     font-size: 24px;
     font-weight: bold;
     margin: 40px auto 20px;
-    text-align: center;
     color: #333;
+    position: relative;
+    padding-left: 20px;
+}
+
+.page-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background-color: #000;
+    border-radius: 2px;
 }
 
 /* 白枠コンテナ */
@@ -16,38 +29,33 @@
     border-radius: 8px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     font-family: "Helvetica Neue", "Arial", sans-serif;
-}
-
-/* 警告文 */
-.warning-text {
-    color: #d9534f;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
+    position: relative;
 }
 
 /* 各項目の行 */
 .detail-row {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: flex-start;
+    padding: 12px 0;
+    gap: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
 /* ラベル */
 .detail-row label {
-    width: 100;
     font-weight: bold;
     color: #555;
+    font-size: 15px;
+    min-width: 120px;
 }
 
 /* 表示用スパン */
 .detail-row span {
-    display: block;
-    padding: 10px 12px;
-    background-color: #f7f7f7;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    font-size: 15px;
     color: #333;
+    flex: 1;
+    text-align: left;
 }
 
 /* 入力欄 */
@@ -56,24 +64,23 @@
     padding: 8px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 15px;
     box-sizing: border-box;
+    width: 200px;
 }
 
 .detail-row span,
 .break-row input[type="time"],
 .break-row textarea {
     flex: 1;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
+    font-size: 15px;
+    color: #333;
 }
 
 /* 出勤・退勤の横並び */
 .time-pair {
     display: flex;
+    align-items: center;
     gap: 10px;
     flex: 1;
 }
@@ -82,20 +89,42 @@
 .break-row {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 10px;
-    margin-bottom: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
 }
 
 .break-row label {
-    width: 100px;
+    min-width: 120px;
     font-weight: bold;
     color: #555;
 }
 
+.break-row input[type="time"] {
+    width: 140px;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.detail-row textarea {
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+}
+
 /* 修正ボタン（枠外） */
 .button-row {
+    position: absolute;
     text-align: center;
-    margin: 30px auto;
+    margin: 30px;
+    margin-bottom: -60px;
+    bottom: -10px;
+    right: 0;
 }
 
 .submit-button {
@@ -111,4 +140,14 @@
 
 .submit-button:hover {
     background-color: #333;
+}
+
+/* 警告文 */
+.warning-text {
+    font-size: 18px;
+    color: #d9534f;
+    font-weight: bold;
+    text-align: right;
+    max-width: 600px;
+    margin: 20px auto 0;
 }
