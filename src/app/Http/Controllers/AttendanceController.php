@@ -153,12 +153,11 @@ class AttendanceController extends Controller
         $userId = auth()->id();
         $targetDate = Carbon::createFromFormat('Y-m-d', $date);
 
-        // 該当日の勤怠データを取得（なければ null）
+        // 該当日の勤怠データを取得
         $attendance = Attendance::where('user_id', $userId)
             ->whereDate('date', $targetDate)
             ->first();
 
-            // 存在しない場合は空のインスタンスを作成（保存はしない）
         if (! $attendance) {
             $attendance = new Attendance([
                 'user_id' => $userId,
@@ -171,6 +170,25 @@ class AttendanceController extends Controller
             $attendance->date = $targetDate->toDateString();
         } else {
             $attendance->breaks = $attendance->breaks ?? [];
+        }
+
+        // 修正申請を確認（承認待ち or 承認済み）
+        $request = StampCorrectionRequest::where('user_id', $userId)
+            ->whereDate('target_date', $targetDate)
+            ->latest()
+            ->first();
+
+        if ($request) {
+            $attendance->started_at = $request->started_at ?? $attendance->started_at;
+            $attendance->left_at    = $request->left_at ?? $attendance->left_at;
+            $attendance->breaks     = $request->breaks ?? $attendance->breaks;
+            $attendance->note       = $request->reason ?? $attendance->note;
+
+            if ($request->status === 'pending') {
+                $attendance->is_pending = true;
+            } else {
+                $attendance->is_pending = false;
+            }
         }
 
         $user = auth()->user();

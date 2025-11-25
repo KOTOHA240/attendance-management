@@ -151,3 +151,93 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     max-width: 600px;
     margin: 20px auto 0;
 }
+
+/* タブレットサイズ以下 */
+@media (max-width: 768px) {
+    .attendance-detail-container {
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin: 24px auto 16px;
+    }
+
+    .detail-row {
+        gap: 12px;
+    }
+
+    .detail-row label {
+        min-width: 100px;
+        font-size: 14px;
+    }
+
+    .detail-row input[type="time"],
+    .detail-row textarea {
+        width: 160px;
+        font-size: 14px;
+    }
+
+    .submit-button {
+        font-size: 14px;
+        padding: 8px 20px;
+    }
+}
+
+/* スマホサイズ以下 */
+@media (max-width: 480px) {
+    .attendance-detail-container {
+        padding: 16px;
+    }
+
+    .page-title {
+        font-size: 18px;
+        margin: 20px auto 12px;
+        padding-left: 12px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        /* ラベルと入力欄を縦並びに */
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .detail-row label {
+        min-width: auto;
+        font-size: 13px;
+    }
+
+    .detail-row input[type="time"],
+    .detail-row textarea {
+        width: 100%;
+        /* 横幅いっぱいに */
+        font-size: 13px;
+    }
+
+    .time-pair {
+        flex-direction: column;
+        /* 出勤・退勤や休憩時間も縦並び */
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .button-row {
+        position: static;
+        /* 枠外固定を解除 */
+        margin: 20px auto 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .submit-button {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .warning-text {
+        font-size: 14px;
+        text-align: left;
+    }
+}

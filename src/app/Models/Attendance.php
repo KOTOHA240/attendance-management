@@ -34,4 +34,20 @@ class Attendance extends Model
         'break_ended_at' => 'datetime',
         'left_at' => 'datetime',
     ];
+
+    public function stampCorrectionRequests()
+    {
+        return $this->hasMany(StampCorrectionRequest::class, 'attendance_id');
+    }
+
+    public function getIsPendingAttribute()
+    {
+        // 関連する申請を確認
+        $request = $this->stampCorrectionRequests()
+            ->where('status', '未処理')
+            ->latest()
+            ->first();
+
+        return $request !== null;
+    }
 }

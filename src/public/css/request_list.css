@@ -111,3 +111,76 @@
     text-decoration: none;
     color: black;
 }
+
+/* タブレットサイズ以下 */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 24px;
+        width: auto;
+    }
+
+    .tab-selector {
+        gap: 16px;
+        font-size: 13px;
+    }
+
+    .request-table th,
+    .request-table td {
+        padding: 8px 6px;
+        font-size: 13px;
+    }
+}
+
+/* スマホサイズ以下 */
+@media (max-width: 480px) {
+    .request-list-container {
+        padding: 0 10px;
+        margin: 20px auto;
+    }
+
+    .title-row {
+        flex-direction: column;
+        /* 縦並びに */
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        height: auto;
+    }
+
+    .tab-selector {
+        flex-direction: column;
+        /* タブを縦並びに */
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .tab-underline {
+        margin-bottom: 12px;
+    }
+
+    /* テーブルを横スクロール可能に */
+    .request-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .request-table table {
+        min-width: 600px;
+        /* スクロール対象の最小幅 */
+    }
+
+    .request-table th,
+    .request-table td {
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+
+    .request-table a {
+        font-size: 12px;
+    }
+}
