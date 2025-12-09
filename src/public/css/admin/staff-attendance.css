@@ -1,0 +1,130 @@
+body {
+    background-color: #F0EFF2;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #737373;
+    margin: 0;
+    padding: 0;
+}
+
+.attendance-list-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* タイトル行 */
+.title-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title-bar {
+    width: 4px;
+    height: 24px;
+    background-color: #333;
+    border-radius: 2px;
+    margin-right: 8px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+/* 月選択ナビ */
+.month-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.month-nav {
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.month-nav:hover {
+    text-decoration: underline;
+}
+
+.current-month {
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* テーブル */
+.table-container {
+    overflow-x: auto;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 16px;
+    color: #737373;
+}
+
+.attendance-table th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+}
+
+/* 詳細リンク */
+.detail-link {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+/* レスポンシブ対応 */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .attendance-list-wrapper {
+        padding: 16px;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-list-wrapper {
+        max-width: 1000px;
+    }
+
+    .page-title {
+        font-size: 26px;
+    }
+
+    .attendance-table {
+        width: 1000px;
+    }
+}

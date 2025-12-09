@@ -1,0 +1,239 @@
+/* ベース */
+body {
+    background-color: #F0EFF2;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #737373;
+    margin: 0;
+    padding: 0;
+}
+
+/* タイトル行 */
+.title-row {
+    max-width: 900px;
+    margin: 40px auto 20px auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+}
+
+.title-bar {
+    width: 6px;
+    height: 24px;
+    background-color: #000;
+    border-radius: 3px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* コンテナ */
+.attendance-detail-container {
+    max-width: 65%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 28px 32px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+/* 行スタイル（確実に一行表示＋中央寄せ＋横棒） */
+.attendance-detail-container .detail-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: 14px 0 !important;
+    border-bottom: 1px solid #F0EFF2 !important;
+    flex-wrap: nowrap !important;
+    /* 一行維持（PC） */
+}
+
+/* 日付行全体 */
+.attendance-detail-container .date-row {
+    align-items: flex-start;
+    /* 上揃えにする */
+}
+
+/* 年と月日を左右に配置 */
+.attendance-detail-container .date-pair {
+    display: flex;
+    justify-content: space-between;
+    /* 左右に分ける */
+    width: 40%;
+    /* 時間欄と同じくらいの幅に */
+    margin: 0 auto;
+    /* 中央寄せ */
+}
+
+/* 年（左側） */
+.attendance-detail-container .date-pair .year {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: left;
+}
+
+/* 月日（右側） */
+.attendance-detail-container .date-pair .month-day {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: right;
+}
+
+/* ラベル固定幅＋左寄せ、内容は中央寄せで一行 */
+.attendance-detail-container .detail-row label {
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+    width: 120px;
+    /* 固定幅で列が揃う */
+    flex: 0 0 120px;
+    text-align: left;
+    margin: 0;
+    /* 余計なマージンを排除 */
+}
+
+.attendance-detail-container .detail-row span {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+    flex: 1 1 auto;
+    text-align: center;
+    /* 中央寄せ */
+    margin: 0;
+}
+
+/* 時間入力ペア：『～』の間隔を狭く、内側余白を抑える */
+.attendance-detail-container .time-pair {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 1px !important;
+    max-width: 50% !important;
+    margin: 0 auto !important;
+    min-width: 0 !important;
+}
+
+.attendance-detail-container .time-pair input[type="time"] {
+    width: 120% !important;
+    padding: 6px 20px !important;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    appearance: none;
+    text-align: center !important;
+    line-height: 1;
+    margin: 0 !important;
+}
+
+.attendance-detail-container .time-pair span {
+    display: inline-block !important;
+    padding: 0 40% !important;
+    color: #333;
+    margin: 0 !important;
+}
+
+/* 備考欄：固定幅にしない（コンテナ内で自然に伸縮） */
+.attendance-detail-container .detail-row textarea {
+    flex: 1 1 320px;
+    max-width: 40%;
+    min-height: 72px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    margin: 0 auto;
+    /* 中央寄せ */
+    display: block;
+}
+
+/* 修正ボタン：テーブル（フォーム）下に表示、右寄せ */
+.attendance-detail-container .button-row {
+    position: absolute;
+    bottom: -60px;
+    right: 0;
+    text-align: right;
+}
+
+.attendance-detail-container .submit-button {
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.attendance-detail-container .submit-button:hover {
+    background-color: #333;
+}
+
+/* デフォルトの時計アイコンを消す（WebKit系） */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+/* レスポンシブ（スマホ） */
+@media screen and (max-width: 768px) {
+    .attendance-detail-container {
+        padding: 20px;
+        margin: 0 12px;
+    }
+
+    .attendance-detail-container .detail-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .attendance-detail-container .detail-row label {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        margin-bottom: 4px !important;
+    }
+
+    .attendance-detail-container .detail-row span {
+        text-align: left !important;
+        width: 100% !important;
+    }
+
+    /* 時間入力ペア：スマホでは横並び維持＋幅調整 */
+    .attendance-detail-container .time-pair {
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .attendance-detail-container .time-pair input[type="time"] {
+        width: 45% !important;
+        /* 左右で合計90%＋「～」分 */
+        padding: 6px 8px !important;
+        font-size: 14px !important;
+    }
+
+    .attendance-detail-container .time-pair span {
+        padding: 0 4px !important;
+    }
+
+    /* 備考欄：スマホでは幅いっぱい */
+    .attendance-detail-container .detail-row textarea {
+        max-width: 100% !important;
+        width: 100% !important;
+        min-height: 96px !important;
+    }
+
+    /* 修正ボタン：スマホでは幅いっぱい */
+    .attendance-detail-container .button-row .submit-button {
+        width: 100% !important;
+        padding: 12px !important;
+    }
+}

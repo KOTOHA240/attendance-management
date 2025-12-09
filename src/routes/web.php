@@ -42,14 +42,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 });
 
-// 管理者用
-Route::prefix('admin')->middleware('auth:admin')->group(function () {
-    Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('admin.attendance.list');
-});
+// 管理者ログイン画面（認証不要）
+Route::get('/admin/login', [\App\Http\Controllers\Admin\LoginController::class, 'showLoginForm'])
+    ->name('admin.login');
 
-Route::get('/admin/login', function () {
-    return view('admin.login');
-})->name('admin.login');
+// 管理者ログイン処理（認証不要）
+Route::post('/admin/login', [\App\Http\Controllers\Admin\LoginController::class, 'login'])
+    ->name('admin.login.post');
+
+// 管理者ログアウト（認証必須）
+Route::post('/admin/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout'])
+    ->name('admin.logout');
+
+// 管理者専用画面（認証必須）
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('attendance/list', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])
+        ->name('admin.attendance.list');
+
+    Route::get('staff/list', [\App\Http\Controllers\Admin\StaffController::class, 'index'])
+        ->name('admin.staff.list');
+    
+    Route::get('attendance/staff/{id}', [\App\Http\Controllers\Admin\AttendanceController::class, 'staffDetail'])
+        ->name('admin.attendance.staff');
+    
+    Route::get('attendance/{userId}/{date}', [\App\Http\Controllers\Admin\AttendanceController::class, 'detail'])
+        ->name('admin.attendance.detail');
+    
+    Route::post('attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'store'])
+        ->name('admin.attendance.store');
+
+    Route::put('attendance/{id}', [\App\Http\Controllers\Admin\AttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
+});
 
 // ログイン処理
 Route::post('/login', [LoginController::class, 'login'])->name('login');

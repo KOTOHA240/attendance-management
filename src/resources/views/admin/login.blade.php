@@ -7,7 +7,7 @@
 @section('content')
 <div class="login-container">
     <h1>管理者ログイン</h1>
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('admin.login.post') }}">
         @csrf
         <label for="email">メールアドレス</label>
         <input type="email" id="email" name="email" value="{{ old('email') }}">

@@ -1,0 +1,115 @@
+body {
+    background-color: #F0EFF2;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #737373;
+    margin: 0;
+    padding: 0;
+}
+
+.staff-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.staff-header-wrapper {
+    width: 900px;
+    max-width: 100%;
+    margin: 0 auto 20px auto;
+}
+
+.staff-header {
+    display: flex;
+    align-items: center;
+}
+
+.vertical-bar {
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background-color: #333;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+.staff-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.staff-table-wrapper {
+    overflow-x: auto;
+}
+
+.staff-table {
+    width: 900px;
+    max-width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.staff-table th,
+.staff-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 16px;
+    color: #737373;
+}
+
+.staff-table th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+}
+
+.detail-link {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+/* レスポンシブ対応 */
+/* タブレット (768–850px) */
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .staff-table {
+        width: 100%;
+        /* テーブルを画面幅いっぱいに */
+    }
+
+    .staff-title {
+        font-size: 22px;
+    }
+
+    .staff-table th,
+    .staff-table td {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+}
+
+/* PC (1400–1540px) */
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .staff-table {
+        width: 1000px;
+        /* 少し広めに */
+    }
+
+    .staff-header-wrapper {
+        width: 1000px;
+        /* タイトルも揃える */
+    }
+
+    .staff-title {
+        font-size: 26px;
+    }
+}
