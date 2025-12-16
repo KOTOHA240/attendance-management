@@ -12,9 +12,18 @@
     </div>
 
     <div class="month-selector">
-        <a href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $prevMonth->format('Y-m')]) }}" class="month-nav prev-month">← 前月</a>
-        <span class="current-month">{{ $targetDate->format('Y年m月') }}</span>
-        <a href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $nextMonth->format('Y-m')]) }}" class="month-nav next-month">翌月 →</a>
+        <div class="month-nav-left">
+            <a href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $prevMonth->format('Y-m')]) }}" class="month-nav prev-month">← 前月</a>
+        </div>
+        <div class="month-nav-center">
+            <span class="current-month">
+                <img src="{{ asset('images/calender.png') }}" alt="カレンダーアイコン" class="month-icon">
+                {{ $targetDate->format('Y年m月') }}
+            </span>
+        </div>
+        <div class="month-nav-right">
+            <a href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $nextMonth->format('Y-m')]) }}" class="month-nav next-month">翌月 →</a>
+        </div>
     </div>
 
     <div class="table-container">
@@ -46,6 +55,14 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="csv-export">
+            <a href="{{ route('admin.attendance.staff.csv', [
+                'id' => $user->id,
+                'month' => $targetDate->format('Y-m')
+            ]) }}" class="csv-button">
+                CSV出力
+            </a>
+        </div>
     </div>
 </div>
 @endsection

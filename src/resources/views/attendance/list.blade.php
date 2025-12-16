@@ -13,7 +13,10 @@
 
     <div class="month-selector">
         <a href="{{ route('attendance.list', ['month' => $prevMonth->format('Y-m')]) }}" class="month-nav prev-month">← 前月</a>
-        <span class="current-month">{{ $targetDate->format('Y/m') }}</span>
+        <span class="current-month">
+            <img src="{{ asset('images/calender.png') }}" alt="カレンダーアイコン" class="month-icon">
+            {{ $targetDate->format('Y/m') }}
+        </span>
         <a href="{{ route('attendance.list', ['month' => $nextMonth->format('Y-m')]) }}" class="month-nav next-month">翌月 →</a>
     </div>
 
@@ -32,13 +35,15 @@
             <tbody>
                 @foreach ($attendances as $attendance)
                     <tr>
-                        <td>{{ $attendance['date']->isoFormat('MM/DD(dd)') }}</td>
-                        <td>{{ $attendance['started_at'] ? $attendance['started_at']->format('H:i') :  '' }}</td>
-                        <td>{{ $attendance['left_at'] ? $attendance['left_at']->format('H:i') : '' }}</td>
-                        <td>{{ $attendance['break_time'] ?? '' }}</td>
-                        <td>{{ $attendance['work_time'] ?? '' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($attendance->date)->isoFormat('MM/DD(dd)') }}</td>
+                        <td>{{ optional($attendance->started_at)->format('H:i') }}</td>
+                        <td>{{ optional($attendance->left_at)->format('H:i') }}</td>
+                        <td>{{ $attendance->break_time ?? '' }}</td>
+                        <td>{{ $attendance->work_time ?? '' }}</td>
                         <td>
-                            <a href="{{ route('attendance.detail', $attendance['date']->format('Y-m-d')) }}" class="detail-link">詳細</a>
+                            <a href="{{ route('attendance.detail', $attendance->id) }}"  class="detail-link">
+                                詳細
+                            </a>
                         </td>
                     </tr>
                 @endforeach

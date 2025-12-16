@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(Auth::user()->is_admin ? 'layouts.master' : 'layouts.app')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/request_list.css') }}">
@@ -32,18 +32,26 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($requests as $request)
-                <tr>
-                    <td>{{ $request->status_label }}</td>
-                    <td>{{ $request->user->name }}</td>
-                    <td>{{ \Carbon\Carbon::parse($request->target_date)->format('Y/m/d') }}</td>
-                    <td>{{ $request->reason }}</td>
-                    <td>{{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}</td>
-                    <td><a href="{{ route('attendance.detail', \Carbon\Carbon::parse($request->target_date)->format('Y-m-d')) }}" class="detail-link">詳細</a></td>
-                </tr>
-            @empty
-                <tr><td colspan="6">申請はありません。</td></tr>
-            @endforelse
+        @forelse ($requests as $request)
+            <tr>
+                <td>{{ $request->status_label }}</td>
+                <td>{{ $request->user->name }}</td>
+                <td>{{ \Carbon\Carbon::parse($request->target_date)->format('Y/m/d') }}</td>
+                <td>{{ $request->reason }}</td>
+                <td>{{ \Carbon\Carbon::parse($request->created_at)->format('Y/m/d') }}</td>
+                <td>
+                    @if(Auth::user()->is_admin)
+                        {{-- 管理者は承認画面へ（requestの主キー） --}}
+                        <a href="{{ route('stamp_correction_request.approve', $request->id) }}" class="detail-link">詳細</a>
+                    @else
+                        {{-- 一般ユーザーは自分の勤怠詳細へ（attendance_idがある場合） --}}
+                        <a href="{{ route('attendance.detail', $request->id) }}" class="detail-link">詳細</a>
+                    @endif
+                </td>
+            </tr>
+        @empty
+            <tr><td colspan="6">申請はありません。</td></tr>
+        @endforelse
         </tbody>
     </table>
 </div>

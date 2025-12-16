@@ -10,7 +10,7 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        if (Auth::guard('admin')->check()) {
+        if (Auth::check() && Auth::user()->is_admin) {
             return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
         }
 

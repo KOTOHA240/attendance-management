@@ -57,7 +57,7 @@ class FortifyServiceProvider extends ServiceProvider
                     ]);
                 }
 
-                Auth::guard('admin')->login($admin);
+                Auth::login($admin);
                 return $admin;
             }
 

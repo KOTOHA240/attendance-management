@@ -10,8 +10,8 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $staff = User::where('is_admin', 0)->get();
 
-        return view('admin.staff.list', compact('users'));
+        return view('admin.staff.list', compact('staff'));
     }
 }

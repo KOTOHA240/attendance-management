@@ -37,10 +37,34 @@ body {
 /* 月選択ナビ */
 .month-selector {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    background-color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
     margin-bottom: 20px;
-    gap: 20px;
+}
+
+.month-nav-left,
+.month-nav-center,
+.month-nav-right {
+    flex: 1;
+}
+
+/* 中央だけテキスト中央揃え */
+.month-nav-center {
+    text-align: center;
+}
+
+/* 右側は右揃え */
+.month-nav-right {
+    text-align: right;
+}
+
+.month-icon {
+    height: 1em;
+    vertical-align: middle;
+    margin-right: 6px;
 }
 
 .month-nav {
@@ -96,6 +120,31 @@ body {
 
 .detail-link:hover {
     text-decoration: underline;
+}
+
+/* CSV出力ボタン配置 */
+.csv-export {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+/* CSV出力ボタンスタイル */
+.csv-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.csv-button:hover {
+    background-color: #333;
 }
 
 /* レスポンシブ対応 */

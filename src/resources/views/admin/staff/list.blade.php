@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($users as $user)
+                @forelse ($staff as $user)
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>

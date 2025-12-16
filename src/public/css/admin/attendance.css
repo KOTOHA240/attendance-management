@@ -50,6 +50,12 @@ body {
     color: #333;
 }
 
+.date-icon {
+    height: 1em;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
 /* 表コンテナ */
 .table-container {
     background-color: #fff;

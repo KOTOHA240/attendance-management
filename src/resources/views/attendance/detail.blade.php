@@ -5,17 +5,21 @@
 @endsection
 
 @section('content')
-<h2 class="page-title">勤怠詳細</h2>
+<div class="title-row">
+    <div class="title-bar"></div>
+    <h2 class="page-title">勤怠詳細</h2>
+</div>
 
 <div class="attendance-detail-container">
-    <form method="POST" action="{{ $attendance->id ? route('attendance.update', $attendance->id) : route('attendance.store') }}">
+    @if (!$isPending)
+    <form method="POST" action="{{ route('stamp_correction_request.store') }}">
         @csrf
-        @if ($attendance->id)
-            @method('PUT')
-        @endif
+    @else
+    <div class="readonly-form">
+    @endif
 
-        <input type="hidden" name="date" value="{{ $attendance->date }}">
-
+        <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
+        <input type="hidden" name="target_date" value="{{ optional($attendance->date)->format('Y-m-d') }}">
 
         <div class="detail-row">
             <label>名前</label>
@@ -24,77 +28,81 @@
 
         <div class="detail-row">
             <label>日付</label>
-            <span>{{ \Carbon\Carbon::parse($attendance->date)->format('Y年n月j日') }}</span>
+            <span>{{ optional($attendance->date)->format('Y年n月j日') }}</span>
+            <input type="hidden" name="date"
+                   value="{{ optional($attendance->date)->format('Y-m-d') }}">
         </div>
 
         <div class="detail-row">
             <label>出勤・退勤</label>
-            @if ($attendance->is_pending)
-                <span>
-                    {{ $attendance->started_at ? $attendance->started_at->format('H:i') : '--:--' }}
-                    ～
-                    {{ $attendance->left_at ? $attendance->left_at->format('H:i') : '--:--' }}
-                </span>
-            @else
-                <div class="time-pair">
-                    <input type="time" name="started_at" value="{{ $attendance->started_at ? $attendance->started_at->format('H:i') : '' }}">
-                    <span>～</span>
-                    <input type="time" name="left_at" value="{{ $attendance->left_at ? $attendance->left_at->format('H:i') : '' }}">
-                </div>
-            @endif
+            <div class="time-pair">
+                <input type="time"
+                       name="started_at"
+                       value="{{ optional($attendance->started_at)->format('H:i') }}"
+                       {{ $isPending ? 'readonly' : '' }}>
+
+                <span>～</span>
+
+                <input type="time"
+                       name="left_at"
+                       value="{{ optional($attendance->left_at)->format('H:i') }}"
+                       {{ $isPending ? 'readonly' : '' }}>
+            </div>
         </div>
 
         @php
             $breaks = $attendance->breaks ?? [];
-            $maxBreaks = count($breaks) + 1;
+            $maxBreaks = 5;
         @endphp
 
         @for ($i = 0; $i < $maxBreaks; $i++)
+            @php
+                $show = $i === 0 || (
+                    !empty($breaks[$i - 1]['start']) &&
+                    !empty($breaks[$i - 1]['end'])
+                );
+            @endphp
+
+            @if ($show)
             <div class="detail-row">
                 <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
                 <div class="time-pair">
-                    <input type="time" name="breaks[{{ $i }}][start]" value="{{ $breaks[$i]['start'] ?? '' }}">
+                    <input type="time"
+                           name="breaks[{{ $i }}][start]"
+                           value="{{ $breaks[$i]['start'] ?? '' }}"
+                           {{ $isPending ? 'readonly' : '' }}>
+
                     <span>～</span>
-                    <input type="time" name="breaks[{{ $i }}][end]" value="{{ $breaks[$i]['end'] ?? '' }}">
+
+                    <input type="time"
+                           name="breaks[{{ $i }}][end]"
+                           value="{{ $breaks[$i]['end'] ?? '' }}"
+                           {{ $isPending ? 'readonly' : '' }}>
                 </div>
             </div>
+            @endif
         @endfor
 
         <div class="detail-row">
             <label>備考</label>
-            @if ($attendance->is_pending)
-                <span>{{ $attendance->note }}</span>
-            @else
-                <textarea name="note">{{ $attendance->note }}</textarea>
-            @endif
+            <textarea name="note"
+                      {{ $isPending ? 'readonly' : '' }}>{{ $attendance->note }}</textarea>
         </div>
 
-
-        @unless ($attendance->is_pending)
+        @if (!$isPending)
             <div class="button-row">
                 <button type="submit" class="submit-button">修正</button>
             </div>
-        @endunless
+        @else
+            <div class="pending-message">
+                ※ 承認待ちのため修正できません
+            </div>
+        @endif
+
+    @if (!$isPending)
     </form>
+    @else
+    </div>
+    @endif
 </div>
-
-
-
-@if ($attendance->is_pending)
-        <p class="warning-text">※承認待ちのため修正はできません。</p>
-@endif
-
-<script>
-    document.getElementById('add-break')?.addEventListener('click', function () {
-        const container = document.getElementById('break-container');
-        const index = container.children.length;
-        const row = document.createElement('div');
-        row.className = 'break-row';
-        row.innerHTML = `
-            <input type="time" name="breaks[${index}][start]"> ～
-            <input type="time" name="breaks[${index}][end]">
-        `;
-        container.appendChild(row);
-    });
-</script>
 @endsection

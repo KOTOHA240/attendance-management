@@ -17,9 +17,11 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        // 管理者用ガードを使う
-        if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->route('admin.attendance.list');
+        if (Auth::attempt($credentials)) {
+            if (Auth::user()->is_admin) {
+                return redirect()->route('admin.attendance.list');
+            }
+            return redirect()->route('attendance.list');
         }
 
         return back()->withErrors([
@@ -29,7 +31,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

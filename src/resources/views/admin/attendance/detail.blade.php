@@ -11,34 +11,31 @@
 </div>
 
 <div class="attendance-detail-container">
-    <form method="POST" action="{{ $attendance->id ? route('admin.attendance.update', $attendance->id) : route('admin.attendance.store') }}">
+    <form method="POST" action="{{ route('admin.attendance.save') }}">
         @csrf
-        @if ($attendance->id)
-            @method('PUT')
-        @endif
 
-        <input type="hidden" name="user_id" value="{{ $user->id }}">
-        <input type="hidden" name="date" value="{{ $attendance->date }}">
+        <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
         <div class="detail-row">
             <label>名前</label>
             <span>{{ $user->name }}</span>
         </div>
 
-        <div class="detail-row date-row">
+        <div class="detail-row">
             <label>日付</label>
             <div class="date-pair">
-                <span class="year">{{ \Carbon\Carbon::parse($attendance->date)->format('Y年') }}</span>
-                <span class="month-day">{{ \Carbon\Carbon::parse($attendance->date)->format('n月j日') }}</span>
+                <span>{{ $attendance->date ? $attendance->date->format('Y年n月j日') : '' }}</span>
+                <input type="hidden" name="date"
+                        value="{{ $attendance->date ? $attendance->date->format('Y-m-d') : now()->format('Y-m-d') }}">
             </div>
         </div>
 
         <div class="detail-row">
             <label>出勤・退勤</label>
             <div class="time-pair">
-                <input type="time" name="started_at" value="{{ $attendance->started_at ? $attendance->started_at->format('H:i') : '' }}">
+                <input type="time" name="started_at" value="{{ optional($attendance->started_at)->format('H:i') }}">
                 <span>～</span>
-                <input type="time" name="left_at" value="{{ $attendance->left_at ? $attendance->left_at->format('H:i') : '' }}">
+                <input type="time" name="left_at" value="{{ optional($attendance->left_at)->format('H:i') }}">
             </div>
         </div>
 
@@ -58,9 +55,9 @@
                 <div class="detail-row">
                     <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
                     <div class="time-pair">
-                        <input type="time" name="breaks[{{ $i }}][start]" value="{{ $breaks[$i]['start'] ?? '' }}">
+                        <input type="time" name="breaks[{{ $i }}][start]" value="{{ !empty($breaks[$i]['start']) ? substr($breaks[$i]['start'],0,5) : '' }}">
                         <span>～</span>
-                        <input type="time" name="breaks[{{ $i }}][end]" value="{{ $breaks[$i]['end'] ?? '' }}">
+                        <input type="time" name="breaks[{{ $i }}][end]" value="{{ !empty($breaks[$i]['end']) ? substr($breaks[$i]['end'],0,5) : '' }}">
                     </div>
                 </div>
             @endif

@@ -7,7 +7,7 @@ use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -24,16 +24,13 @@ class AttendanceController extends Controller
             $user->save();
         }
 
-        // 現在の状態は users.status から取得
         $status = $user->status ?? '勤務外';
-
-        // 日付（漢字曜日）
-        $now = \Carbon\Carbon::now()->isoFormat('YYYY年M月D日(ddd)');
+        $now = Carbon::now()->isoFormat('YYYY年M月D日(ddd)');
 
         return view('attendance.index', compact('status', 'now'));
     }
 
-    public function startWork(Request $request)
+    public function startWork()
     {
         $user = Auth::user();
         $user->status = '勤務中';
@@ -41,62 +38,13 @@ class AttendanceController extends Controller
 
         Attendance::updateOrCreate(
             ['user_id' => $user->id, 'date' => today()],
-            [
-                'date' => today(),
-                'started_at' => now(),
-            ]
+            ['started_at' => now()]
         );
 
         return redirect()->route('attendance.index');
     }
 
-    public function list(Request $request)
-    {
-        $userId = auth()->id();
-
-        $monthParam = $request->input('month', now()->format('Y-m'));
-        $targetDate = Carbon::createFromFormat('Y-m', $monthParam);
-
-        $startOfMonth = $targetDate->copy()->startOfMonth();
-        $endOfMonth = $startOfMonth->copy()->endOfMonth();
-
-        // 勤怠データを取得して日付でキー化
-        $attendances = Attendance::where('user_id', $userId)
-            ->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->get()
-            ->keyBy('date');
-
-        // 月の日付一覧を生成し、勤怠データをマージ
-        $days = new \Illuminate\Support\Collection();
-        for ($date = $startOfMonth->copy(); $date->lte($endOfMonth); $date->addDay()) {
-            $attendance = $attendances->get($date->toDateString());
-
-            $days->push([
-                'date' => $date->copy(),
-                'started_at' => optional($attendance)->started_at ? Carbon::parse($attendance->started_at) : null,
-                'left_at' => optional($attendance)->left_at ? Carbon::parse($attendance->left_at) : null,
-                'break_started_at' => optional($attendance)->break_started_at ? Carbon::parse($attendance->break_started_at) : null,
-                'break_ended_at' => optional($attendance)->break_ended_at ? Carbon::parse($attendance->break_ended_at) : null,
-                'break_time' => optional($attendance)->break_time,
-                'work_time' => optional($attendance)->work_time,
-                'id' => optional($attendance)->id,
-            ]);
-        }
-
-        // 前月・翌月のCarbonインスタンスを渡す
-        $prevMonth = $targetDate->copy()->subMonth();
-        $nextMonth = $targetDate->copy()->addMonth();
-
-        return view('attendance.list', [
-            'attendances' => $days,
-            'targetDate' => $targetDate,
-            'prevMonth' => $prevMonth,
-            'nextMonth' => $nextMonth,
-        ]);
-    }
-
-
-    public function leaveWork(Request $request)
+    public function leaveWork()
     {
         $user = Auth::user();
         $user->status = '勤務終了';
@@ -104,156 +52,115 @@ class AttendanceController extends Controller
 
         Attendance::updateOrCreate(
             ['user_id' => $user->id, 'date' => today()],
-            [
-                'date' => today(),           // ← 追加
-                'left_at' => now(),
-            ]
+            ['left_at' => now()]
         );
 
         return redirect()->route('attendance.index');
     }
 
-
-    public function startBreak(Request $request)
+    public function list(Request $request)
     {
-        $user = Auth::user();
-        $user->status = '休憩中';
-        $user->save();
+        $user = auth()->user();
+        $month = $request->input('month', now()->format('Y-m'));
+        $targetDate = \Carbon\Carbon::createFromFormat('Y-m', $month);
 
-        Attendance::updateOrCreate(
-            ['user_id' => $user->id, 'date' => today()],
-            [
-                'date' => today(),
-                'break_started_at' => now(),
-            ]
-        );
+        $start = $targetDate->copy()->startOfMonth();
+        $end   = $targetDate->copy()->endOfMonth();
 
-        return redirect()->route('attendance.index');
-    }
+    // ★ 必ず配列として初期化
+        $attendances = [];
 
-    public function endBreak(Request $request)
-    {
-        $user = Auth::user();
-        $user->status = '勤務中';
-        $user->save();
+        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
 
-        Attendance::updateOrCreate(
-            ['user_id' => $user->id, 'date' => today()],
-            [
-                'date' => today(),
-                'break_ended_at' => now(),
-            ]
-        );
+            $attendance = Attendance::firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'date'    => $date->toDateString(),
+                ],
+                [
+                    'started_at' => null,
+                    'left_at'    => null,
+                    'breaks'     => [],
+                    'note'       => '',
+                ]
+            );
 
-        return redirect()->route('attendance.index');
-    }
-
-    public function detail($date)
-    {
-        $userId = auth()->id();
-        $targetDate = Carbon::createFromFormat('Y-m-d', $date);
-
-        // 該当日の勤怠データを取得
-        $attendance = Attendance::where('user_id', $userId)
-            ->whereDate('date', $targetDate)
-            ->first();
-
-        if (! $attendance) {
-            $attendance = new Attendance([
-                'user_id' => $userId,
-                'started_at' => null,
-                'left_at' => null,
-                'breaks' => [],
-                'note' => null,
-                'is_pending' => false,
-            ]);
-            $attendance->date = $targetDate->toDateString();
-        } else {
-            $attendance->breaks = $attendance->breaks ?? [];
+        // ★ Attendanceモデルをそのまま push
+            $attendances[] = $attendance;
         }
 
-        // 修正申請を確認（承認待ち or 承認済み）
-        $request = StampCorrectionRequest::where('user_id', $userId)
-            ->whereDate('target_date', $targetDate)
+        $prevMonth = $targetDate->copy()->subMonth();
+        $nextMonth = $targetDate->copy()->addMonth();
+
+        return view('attendance.list', compact(
+            'attendances',
+            'targetDate',
+            'prevMonth',
+            'nextMonth'
+        ));
+    }
+
+    public function detail($id)
+    {
+        $user = auth()->user();
+
+        // 勤怠取得（自分のものだけ）
+        $attendance = Attendance::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        // breaks が null の場合に備える
+        $attendance->breaks = $attendance->breaks ?? [];
+
+        // 最新の修正申請
+        $latestRequest = StampCorrectionRequest::where('attendance_id', $attendance->id)
             ->latest()
             ->first();
 
-        if ($request) {
-            $attendance->started_at = $request->started_at ?? $attendance->started_at;
-            $attendance->left_at    = $request->left_at ?? $attendance->left_at;
-            $attendance->breaks     = $request->breaks ?? $attendance->breaks;
-            $attendance->note       = $request->reason ?? $attendance->note;
+        // 承認待ち判定（status は pending に統一）
+        $isPending = $latestRequest && $latestRequest->status === 'pending';
 
-            if ($request->status === 'pending') {
-                $attendance->is_pending = true;
-            } else {
-                $attendance->is_pending = false;
-            }
-        }
-
-        $user = auth()->user();
-
-        return view('attendance.detail', compact('attendance', 'user'));
+        return view('attendance.detail', [
+            'attendance'     => $attendance,
+            'user'           => $user,
+            'latestRequest'  => $latestRequest,
+            'isPending'      => $isPending,
+        ]);
     }
+
 
     public function update(Request $request, $id)
     {
-        $attendance = Attendance::find($id);
+        $attendance = Attendance::findOrFail($id);
 
-        if (! $attendance || $attendance->user_id !== auth()->id()) {
+        if ($attendance->user_id !== auth()->id()) {
             abort(403);
         }
 
-        // 勤怠データを更新（バリデーションは省略）
-        $attendance->started_at = $request->input('started_at')
-            ? Carbon::createFromFormat('H:i', $request->input('started_at'))->setDateFrom($attendance->date) : null;
-        $attendance->left_at = $request->input('left_at')
-            ? Carbon::createFromFormat('H:i', $request->input('left_at'))->setDateFrom($attendance->date)
-            : null;
-        $attendance->note = $request->input('note');
-        $attendance->breaks = $request->input('breaks', []);
-        $attendance->is_pending = true;
-        $attendance->save();
-
-        if (!StampCorrectionRequest::where('attendance_id', $attendance->id)->exists()) {
-            StampCorrectionRequest::create([
-                'user_id'       => auth()->id(),
-                'attendance_id' => $attendance->id,
-                'target_date'   => $attendance->date,
-                'reason'        => $request->input('note'),
-                'is_approved'   => false,
-            ]);
-
+        if ($request->filled('started_at')) {
+            $attendance->started_at =
+                $attendance->date->copy()->setTimeFromTimeString($request->started_at);
         }
 
-        return redirect()->route('stamp_correction_request.list')->with('status', '修正申請を送信しました');
-    }
+        if ($request->filled('left_at')) {
+            $attendance->left_at =
+                $attendance->date->copy()->setTimeFromTimeString($request->left_at);
+        }
 
-    public function store(Request $request)
-    {
-        $attendance = new Attendance();
-        $attendance->user_id = auth()->id();
-        $attendance->date = $request->input('date');
-        $attendance->started_at = $request->input('started_at')
-            ? Carbon::createFromFormat('H:i', $request->input('started_at'))->setDateFrom($attendance->date) : null; // 統一
-        $attendance->left_at = $request->input('left_at')
-            ? Carbon::createFromFormat('H:i', $request->input('left_at'))->setDateFrom($attendance->date)
-            : null;// 統一
         $attendance->note = $request->input('note');
         $attendance->breaks = $request->input('breaks', []);
         $attendance->is_pending = true;
         $attendance->save();
 
-        // 申請レコードを作成
         StampCorrectionRequest::create([
-            'user_id'       => auth()->id(),
+            'user_id' => auth()->id(),
             'attendance_id' => $attendance->id,
-            'target_date'   => $attendance->date,
-            'reason'        => $request->input('note'),
-            'is_approved'   => false,
+            'target_date' => $attendance->date,
+            'reason' => $request->note,
+            'status' => 'pending',
         ]);
 
         return redirect()->route('stamp_correction_request.list')
-                        ->with('status', '勤怠申請を送信しました');
+            ->with('status', '修正申請を送信しました');
     }
 }

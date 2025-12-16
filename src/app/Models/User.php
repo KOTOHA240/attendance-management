@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -42,6 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is\admin' => 'boolean',
     ];
 
     public function attendances()
@@ -57,5 +59,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmail);
+    }
+
+    public function correctionRequests()
+    {
+        return $this->hasMany(AttendanceCorrectionRequest::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin === 1;
     }
 }

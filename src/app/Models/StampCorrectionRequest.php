@@ -15,6 +15,11 @@ class StampCorrectionRequest extends Model
         'target_date',
         'reason',
         'is_approved',
+        'corrected_start_time',
+        'corrected_end_time',
+        'corrected_break_start_time',
+        'corrected_break_end_time',
+        'note',
     ];
 
     public function user()

@@ -10,7 +10,10 @@
         <h2>{{ $targetDate->format('Y年m月d日') }} の勤怠一覧</h2>
         <div class="date-nav">
             <a href="{{ route('admin.attendance.list', ['date' => $prevDate->format('Y-m-d')]) }}" class="nav-link">← 前日</a>
-            <span class="current-date">{{ $targetDate->format('Y年m月d日') }}</span>
+            <span class="current-date">
+                <img src="{{ asset('images/calender.png') }}" alt="カレンダーアイコン" class="date-icon">
+                {{ $targetDate->format('Y年m月d日') }}
+            </span>
             <a href="{{ route('admin.attendance.list', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-link">翌日 →</a>
         </div>
     </div>
@@ -36,7 +39,10 @@
                         <td>{{ $attendance->break_time ?? '' }}</td>
                         <td>{{ $attendance->work_time ?? '' }}</td>
                         <td>
-                            <a href="{{ route('admin.attendance.detail', ['id' => $attendance->id]) }}" class="detail-link">詳細</a>
+                            <a href="{{ route('admin.attendance.detail', [
+                                'userId' => $attendance->user_id,
+                                'date' => $attendance->date->format('Y-m-d')
+                                ]) }}" class="detail-link">詳細</a>
                         </td>
                     </tr>
                 @empty
