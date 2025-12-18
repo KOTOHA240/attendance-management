@@ -20,11 +20,20 @@ class AttendanceController extends Controller
             ->first();
 
         if (! $todayAttendance) {
-            $user->status = '勤務外';
-            $user->save();
+            $status = '勤務外';
+        } elseif ($todayAttendance->left_at) {
+            $status = '勤務終了';
+        } elseif (!empty($todayAttendance->breaks)) {
+            $lastBreak = collect($todayAttendance->breaks)->last();
+            if ($lastBreak && empty($lastBreak['end'])) {
+                $status = '休憩中';
+            } else {
+                $status = '勤務中';
+            }
+        } else {
+            $status = '勤務中';
         }
 
-        $status = $user->status ?? '勤務外';
         $now = Carbon::now()->isoFormat('YYYY年M月D日(ddd)');
 
         return view('attendance.index', compact('status', 'now'));
@@ -62,28 +71,22 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
-        $user->status = '休憩中';
-        $user->save();
-
-        $attendance = Attendance::firstOrCreate(
-            [
-                'user_id' => $user->id,
-                'date' => today(),
-            ],
-            [
-                'started_at' => now(),
-                'breaks' => [],
-            ]
-        );
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', today())
+            ->firstOrFail();
 
         $breaks = $attendance->breaks ?? [];
+
         $breaks[] = [
-            'start' => now()->format('H:i'),
-            'end' => null,
+            'start' => now()->toDateTimeString(),
+            'end'   => null,
         ];
 
         $attendance->breaks = $breaks;
         $attendance->save();
+
+        $user->status = '休憩中';
+        $user->save();
 
         return redirect()->route('attendance.index');
     }
@@ -91,9 +94,6 @@ class AttendanceController extends Controller
     public function endBreak()
     {
         $user = Auth::user();
-
-        $user->status = '勤務中';
-        $user->save();
 
         $attendance = Attendance::where('user_id', $user->id)
             ->whereDate('date', today())
@@ -103,11 +103,14 @@ class AttendanceController extends Controller
         $lastIndex = count($breaks) - 1;
 
         if ($lastIndex >= 0 && empty($breaks[$lastIndex]['end'])) {
-            $breaks[$lastIndex]['end'] = now()->format('H:i');
+            $breaks[$lastIndex]['end'] = now()->toDateTimeString();
         }
 
         $attendance->breaks = $breaks;
         $attendance->save();
+
+        $user->status = '勤務中';
+        $user->save();
 
         return redirect()->route('attendance.index');
     }
