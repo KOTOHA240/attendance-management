@@ -15,19 +15,23 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            if (Auth::user()->is_admin) {
-                return redirect()->route('admin.attendance.list');
-            }
-            return redirect()->route('attendance.list');
+            $request->session()->regenerate();
+            return redirect()->route('admin.attendance.list');
         }
 
         return back()->withErrors([
             'email' => 'ログイン情報が登録されていません。',
-        ]);
+        ])->withInput();
     }
+
 
     public function logout(Request $request)
     {

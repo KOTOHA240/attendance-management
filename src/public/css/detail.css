@@ -1,3 +1,7 @@
+body {
+    background-color: #F0EFF2;
+}
+
 /* ページタイトル（白枠の外） */
 .page-title {
     max-width: 600px;
@@ -14,7 +18,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 4px;
+    width: 6px;
     height: 100%;
     background-color: #000;
     border-radius: 2px;
@@ -45,7 +49,7 @@
 /* ラベル */
 .detail-row label {
     font-weight: bold;
-    color: #555;
+    color: #737373;
     font-size: 15px;
     min-width: 120px;
 }
@@ -53,7 +57,8 @@
 /* 表示用スパン */
 .detail-row span {
     font-size: 15px;
-    color: #333;
+    color: #000;
+    font-weight: bold;
     flex: 1;
     text-align: left;
 }
@@ -143,13 +148,16 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 /* 警告文 */
-.warning-text {
-    font-size: 18px;
+.pending-message {
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+    margin: 30px;
+    margin-bottom: -60px;
+    font-size: 16px;
     color: #d9534f;
     font-weight: bold;
     text-align: right;
-    max-width: 600px;
-    margin: 20px auto 0;
 }
 
 /* タブレットサイズ以下 */

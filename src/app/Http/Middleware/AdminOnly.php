@@ -18,7 +18,7 @@ class AdminOnly
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || !Auth::user()->is_admin) {
-            about(403, '管理者専用ページです');
+            abort(403, '管理者専用ページです');
         }
 
         return $next($request);
