@@ -80,9 +80,9 @@ class Attendance extends Model
     {
         return $query->where(function ($q) {
             $q->whereDoesntHave('stampCorrectionRequests') // 申請がない（通常打刻）
-              ->orWhereHas('stampCorrectionRequests', function ($sub) {
-                  $sub->where('is_approved', true); // 承認済み申請がある
-              });
+                ->orWhereHas('stampCorrectionRequests', function ($sub) {
+                  $sub->where('status', 'approved'); // 承認済み申請がある
+                });
         });
     }
 }

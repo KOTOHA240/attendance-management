@@ -120,7 +120,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('/attendance', [AdminAttendanceController::class, 'store'])
         ->name('admin.attendance.store');
 
-    Route::post('admin/attendance/save', [AdminAttendanceController::class, 'save'])
+    Route::post('/attendance/save', [AdminAttendanceController::class, 'save'])
         ->name('admin.attendance.save');
 
     // スタッフ管理
@@ -131,9 +131,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{id}', [StampCorrectionRequestController::class, 'approveDetail'])
         ->name('stamp_correction_request.approve');
 
-    Route::get('/stamp_correction_request/{id}/approve', [StampCorrectionRequestController::class, 'approve'])
+    Route::post('/stamp_correction_request/{id}/approve', [StampCorrectionRequestController::class, 'approve'])
         ->name('stamp_correction_request.approve.execute');
-    
+
     Route::get(
         '/admin/attendance/staff/{id}/csv',
         [AdminAttendanceController::class, 'exportStaffCsv']

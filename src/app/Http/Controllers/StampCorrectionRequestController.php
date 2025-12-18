@@ -84,29 +84,33 @@ class StampCorrectionRequestController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $requestItem = StampCorrectionRequest::with('attendance')->findOrFail($id);
-        $attendance = $requestItem->attendance;
+        DB::transaction(function () use ($id) {
+            $requestItem = StampCorrectionRequest::with('attendance')->findOrFail($id);
+            $attendance = $requestItem->attendance;
 
-        // 勤怠データを修正後の内容で上書き
-        if ($requestItem->corrected_start_time) {
-            $attendance->started_at = $requestItem->corrected_start_time;
-        }
-        if ($requestItem->corrected_end_time) {
-            $attendance->left_at = $requestItem->corrected_end_time;
-        }
-        if ($requestItem->corrected_breaks) {
-            $attendance->breaks = $requestItem->corrected_breaks;
-        }
-        if ($requestItem->note) {
-            $attendance->note = $requestItem->note;
-        }
-        $attendance->save();
+            // 勤怠データを修正後の内容で上書き
+            if ($requestItem->corrected_start_time) {
+                $attendance->started_at = $requestItem->corrected_start_time;
+            }
+            if ($requestItem->corrected_end_time) {
+                $attendance->left_at = $requestItem->corrected_end_time;
+            }
+            if ($requestItem->corrected_breaks) {
+                $attendance->breaks = $requestItem->corrected_breaks;
+            }
+            if ($requestItem->note) {
+                $attendance->note = $requestItem->note;
+            }
 
-        // 申請を承認済みに更新
-        $requestItem->status = 'approved';
-        $requestItem->save();
+            $attendance->save();
 
-        return redirect()->route('stamp_correction_request.list', ['status' => 'approved'])
+            // 申請を承認済みに更新
+            $requestItem->status = 'approved';
+            $requestItem->save();
+        });
+
+        return redirect()
+            ->route('stamp_correction_request.list', ['status' => 'approved'])
             ->with('success', '修正申請を承認し、勤怠データに反映しました。');
     }
 }
