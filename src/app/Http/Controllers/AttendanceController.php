@@ -58,6 +58,60 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index');
     }
 
+    public function startBreak()
+    {
+        $user = Auth::user();
+
+        $user->status = '休憩中';
+        $user->save();
+
+        $attendance = Attendance::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'date' => today(),
+            ],
+            [
+                'started_at' => now(),
+                'breaks' => [],
+            ]
+        );
+
+        $breaks = $attendance->breaks ?? [];
+        $breaks[] = [
+            'start' => now()->format('H:i'),
+            'end' => null,
+        ];
+
+        $attendance->breaks = $breaks;
+        $attendance->save();
+
+        return redirect()->route('attendance.index');
+    }
+
+    public function endBreak()
+    {
+        $user = Auth::user();
+
+        $user->status = '勤務中';
+        $user->save();
+
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('date', today())
+            ->firstOrFail();
+
+        $breaks = $attendance->breaks ?? [];
+        $lastIndex = count($breaks) - 1;
+
+        if ($lastIndex >= 0 && empty($breaks[$lastIndex]['end'])) {
+            $breaks[$lastIndex]['end'] = now()->format('H:i');
+        }
+
+        $attendance->breaks = $breaks;
+        $attendance->save();
+
+        return redirect()->route('attendance.index');
+    }
+
     public function list(Request $request)
     {
         $user = auth()->user();
