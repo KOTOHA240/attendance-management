@@ -45,7 +45,7 @@
                         <a href="{{ route('stamp_correction_request.approve', $request->id) }}" class="detail-link">詳細</a>
                     @else
                         {{-- 一般ユーザーは自分の勤怠詳細へ（attendance_idがある場合） --}}
-                        <a href="{{ route('attendance.detail', $request->id) }}" class="detail-link">詳細</a>
+                        <a href="{{ route('attendance.detail', $request->attendance_id) }}" class="detail-link">詳細</a>
                     @endif
                 </td>
             </tr>

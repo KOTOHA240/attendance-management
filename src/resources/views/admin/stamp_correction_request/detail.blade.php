@@ -22,18 +22,18 @@
         </div>
         <div class="detail-row">
             <label>出勤・退勤</label>
-            <span>{{ $request->corrected_start_time }} ～ {{ $request->corrected_end_time }}</span>
+            <span>{{ $request->corrected_start_time ?? '-' }} ～ {{ $request->corrected_end_time ?? '-' }}</span>
         </div>
-        <div class="detail-row">
-            <label>休憩</label>
-            <span>{{ $request->corrected_break_start_time }} ～ {{ $request->corrected_break_end_time }}</span>
-        </div>
-        @if($request->break2_start_time && $request->break2_end_time)
-        <div class="detail-row">
-            <label>休憩2</label>
-            <span>{{ $request->break2_start_time }} ～ {{ $request->break2_end_time }}</span>
-        </div>
+
+        @if(!empty($request->corrected_breaks))
+            @foreach($request->corrected_breaks as $i => $break)
+                <div class="detail-row">
+                    <label>休憩{{ $i+1 }}</label>
+                    <span>{{ $break['start'] ?? '-' }} ～ {{ $break['end'] ?? '-' }}</span>
+                </div>
+            @endforeach
         @endif
+
         <div class="detail-row">
             <label>備考</label>
             <span>{{ $request->note }}</span>

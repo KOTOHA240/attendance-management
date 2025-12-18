@@ -41,8 +41,6 @@ class StampCorrectionRequestController extends Controller
             'target_date' => ['required', 'date'],
             'corrected_start_time' => ['nullable', 'date_format:H:i'],
             'corrected_end_time' => ['nullable', 'date_format:H:i'],
-            'corrected_break_start_time' => ['nullable', 'date_format:H:i'],
-            'corrected_break_end_time' => ['nullable', 'date_format:H:i'],
             'note' => ['nullable', 'string', 'max:1000'],
             'reason' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -50,6 +48,11 @@ class StampCorrectionRequestController extends Controller
         $attendance = Attendance::where('id', $validated['attendance_id'])
             ->where('user_id', Auth::id())
             ->firstOrFail();
+
+        $breaks = collect($request->input('breaks', []))
+            ->filter(fn ($b) => !empty($b['start']) && !empty($b['end']))
+            ->values()
+            ->toArray();
 
         StampCorrectionRequest::create([
             'user_id' => Auth::id(),
@@ -59,21 +62,23 @@ class StampCorrectionRequestController extends Controller
             'status' => 'pending',
             'corrected_start_time' => $request->input('corrected_start_time'),
             'corrected_end_time' => $request->input('corrected_end_time'),
-            'corrected_break_start_time' => $request->input('corrected_break_start_time'),
-            'corrected_break_end_time' => $request->input('corrected_break_end_time'),
+            'corrected_breaks' => $breaks,
             'note' => $request->input('note'),
         ]);
 
-        return redirect()->route('stamp_correction_request.list', ['status' => 'pending'])
-            ->with('success', '修正申請を提出しました。承認待ちに追加されました。');
+        return redirect()->route('attendance.detail', ['id' => $attendance->id])
+            ->with('success', '修正申請を提出しました。');
+
     }
 
     public function approveDetail($id)
     {
         $requestItem = StampCorrectionRequest::with(['user', 'attendance'])->findOrFail($id);
+        $attendance = $requestItem->attendance;
 
         return view('admin.stamp_correction_request.detail', [
             'request' => $requestItem,
+            'attendance' => $attendance,
         ]);
     }
 
@@ -89,11 +94,8 @@ class StampCorrectionRequestController extends Controller
         if ($requestItem->corrected_end_time) {
             $attendance->left_at = $requestItem->corrected_end_time;
         }
-        if ($requestItem->corrected_break_start_time) {
-            $attendance->break_start_time = $requestItem->corrected_break_start_time;
-        }
-        if ($requestItem->corrected_break_end_time) {
-            $attendance->break_end_time = $requestItem->corrected_break_end_time;
+        if ($requestItem->corrected_breaks) {
+            $attendance->breaks = $requestItem->corrected_breaks;
         }
         if ($requestItem->note) {
             $attendance->note = $requestItem->note;

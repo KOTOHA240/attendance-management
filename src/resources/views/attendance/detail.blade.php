@@ -37,56 +37,47 @@
             <label>出勤・退勤</label>
             <div class="time-pair">
                 <input type="time"
-                       name="started_at"
-                       value="{{ optional($attendance->started_at)->format('H:i') }}"
-                       {{ $isPending ? 'readonly' : '' }}>
+                    name="corrected_start_time"
+                    value="{{ optional($attendance->started_at)->format('H:i') }}"
+                    {{ $isPending ? 'readonly' : '' }}>
 
                 <span>～</span>
 
                 <input type="time"
-                       name="left_at"
-                       value="{{ optional($attendance->left_at)->format('H:i') }}"
-                       {{ $isPending ? 'readonly' : '' }}>
+                    name="corrected_end_time"
+                    value="{{ optional($attendance->left_at)->format('H:i') }}"
+                    {{ $isPending ? 'readonly' : '' }}>
             </div>
         </div>
 
         @php
             $breaks = $attendance->breaks ?? [];
-            $maxBreaks = 5;
+            $maxBreaks = count($breaks) + 1;
         @endphp
 
         @for ($i = 0; $i < $maxBreaks; $i++)
-            @php
-                $show = $i === 0 || (
-                    !empty($breaks[$i - 1]['start']) &&
-                    !empty($breaks[$i - 1]['end'])
-                );
-            @endphp
-
-            @if ($show)
             <div class="detail-row">
                 <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
                 <div class="time-pair">
                     <input type="time"
-                           name="breaks[{{ $i }}][start]"
-                           value="{{ $breaks[$i]['start'] ?? '' }}"
-                           {{ $isPending ? 'readonly' : '' }}>
+                        name="breaks[{{ $i }}][start]"
+                        value="{{ $breaks[$i]['start'] ?? '' }}"
+                        {{ $isPending ? 'readonly' : '' }}>
 
                     <span>～</span>
 
                     <input type="time"
-                           name="breaks[{{ $i }}][end]"
-                           value="{{ $breaks[$i]['end'] ?? '' }}"
-                           {{ $isPending ? 'readonly' : '' }}>
+                        name="breaks[{{ $i }}][end]"
+                        value="{{ $breaks[$i]['end'] ?? '' }}"
+                        {{ $isPending ? 'readonly' : '' }}>
                 </div>
             </div>
-            @endif
         @endfor
 
         <div class="detail-row">
             <label>備考</label>
             <textarea name="note"
-                      {{ $isPending ? 'readonly' : '' }}>{{ $attendance->note }}</textarea>
+                    {{ $isPending ? 'readonly' : '' }}>{{ $attendance->note }}</textarea>
         </div>
 
         @if (!$isPending)

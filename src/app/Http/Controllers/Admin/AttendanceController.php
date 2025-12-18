@@ -21,7 +21,7 @@ class AttendanceController extends Controller
 
         $attendances = \App\Models\Attendance::with('user')
             ->whereDate('date', $targetDate)
-            ->approvesOrNormal()
+            ->approvedOrNormal()
             ->get();
 
         return view('admin.attendance.list', compact('attendances', 'targetDate', 'prevDate', 'nextDate'));
@@ -58,7 +58,7 @@ class AttendanceController extends Controller
         $attendances = [];
         foreach ($period as $date) {
             $key = $date->format('Y-m-d');
-            $record = $attendanceDate[$key] ?? null;
+            $record = $attendanceData[$key] ?? null;
 
             $attendances[] = [
                 'id'         => $record->id ?? null,

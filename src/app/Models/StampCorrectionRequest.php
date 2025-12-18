@@ -14,13 +14,17 @@ class StampCorrectionRequest extends Model
         'attendance_id',
         'target_date',
         'reason',
-        'is_approved',
+        'status',
         'corrected_start_time',
         'corrected_end_time',
-        'corrected_break_start_time',
-        'corrected_break_end_time',
+        'corrected_breaks',
         'note',
     ];
+
+    protected $casts = [
+        'corrected_breaks' => 'array',
+    ];
+
 
     public function user()
     {
@@ -34,6 +38,13 @@ class StampCorrectionRequest extends Model
 
     public function getStatusLabelAttribute()
     {
-        return $this->is_approved ? '承認済み' : '承認待ち';
+        switch ($this->status) {
+            case 'pending':
+                return '承認待ち';
+            case 'approved':
+                return '承認済み';
+            default:
+                return '未処理';
+        }
     }
 }

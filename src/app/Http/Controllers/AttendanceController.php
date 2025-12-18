@@ -120,6 +120,14 @@ class AttendanceController extends Controller
         // 承認待ち判定（status は pending に統一）
         $isPending = $latestRequest && $latestRequest->status === 'pending';
 
+        if ($isPending) {
+            $attendance->started_at = $latestRequest->corrected_start_time ?? $attendance->started_at;
+            $attendance->left_at    = $latestRequest->corrected_end_time ?? $attendance->left_at;
+            $attendance->note       = $latestRequest->note ?? $attendance->note;
+
+            $attendance->breaks     = $latestRequest->corrected_breaks ?? $attendance->breaks;
+        }
+
         return view('attendance.detail', [
             'attendance'     => $attendance,
             'user'           => $user,
