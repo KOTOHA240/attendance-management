@@ -12,7 +12,7 @@
             <a href="{{ route('admin.attendance.list', ['date' => $prevDate->format('Y-m-d')]) }}" class="nav-link">← 前日</a>
             <span class="current-date">
                 <img src="{{ asset('images/calender.png') }}" alt="カレンダーアイコン" class="date-icon">
-                {{ $targetDate->format('Y年m月d日') }}
+                {{ $targetDate->format('Y/m/d') }}
             </span>
             <a href="{{ route('admin.attendance.list', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-link">翌日 →</a>
         </div>

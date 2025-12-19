@@ -73,21 +73,32 @@ body {
 
 .attendance-table th,
 .attendance-table td {
-    border: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
     padding: 12px;
     text-align: center;
 }
 
 .attendance-table th {
-    background-color: #f9f9f9;
+    background-color: #fff;
     font-weight: 600;
     color: #444;
+}
+
+.attendance-table thead tr:first-child th {
+    border-top: none;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* 詳細リンク */
 .detail-link {
     color: black;
-    text-decoration: underline;
+    text-decoration: none;
     font-weight: 500;
 }
 

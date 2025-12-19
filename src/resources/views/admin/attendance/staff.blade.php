@@ -18,7 +18,7 @@
         <div class="month-nav-center">
             <span class="current-month">
                 <img src="{{ asset('images/calender.png') }}" alt="カレンダーアイコン" class="month-icon">
-                {{ $targetDate->format('Y年m月') }}
+                {{ $targetDate->format('Y/m') }}
             </span>
         </div>
         <div class="month-nav-right">
