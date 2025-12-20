@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
+use App\Http\Requests\StampCorrectionRequest as StampCorrectionFormRequest;
 
 
 class StampCorrectionRequestController extends Controller
@@ -34,16 +35,9 @@ class StampCorrectionRequestController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StampCorrectionFormRequest $request)
     {
-        $validated = $request->validate([
-            'attendance_id' => ['required', 'exists:attendances,id'],
-            'target_date' => ['required', 'date'],
-            'corrected_start_time' => ['nullable', 'date_format:H:i'],
-            'corrected_end_time' => ['nullable', 'date_format:H:i'],
-            'note' => ['nullable', 'string', 'max:1000'],
-            'reason' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $validated = $request->validated();
 
         $attendance = Attendance::where('id', $validated['attendance_id'])
             ->where('user_id', Auth::id())

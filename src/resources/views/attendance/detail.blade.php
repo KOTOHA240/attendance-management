@@ -30,23 +30,35 @@
             <label>日付</label>
             <span>{{ optional($attendance->date)->format('Y年n月j日') }}</span>
             <input type="hidden" name="date"
-                   value="{{ optional($attendance->date)->format('Y-m-d') }}">
+                    value="{{ optional($attendance->date)->format('Y-m-d') }}">
         </div>
 
         <div class="detail-row">
             <label>出勤・退勤</label>
-            <div class="time-pair">
-                <input type="time"
-                    name="corrected_start_time"
-                    value="{{ optional($attendance->started_at)->format('H:i') }}"
-                    {{ $isPending ? 'readonly' : '' }}>
+            <div class="input-block">
+                <div class="time-pair">
+                    <div class="time-input-group">
+                        <input type="time"
+                            name="corrected_start_time"
+                            value="{{ old('corrected_start_time', optional($attendance->started_at)->format('H:i')) }}"
+                            {{ $isPending ? 'readonly' : '' }}>
+                        @error('corrected_start_time')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                <span>～</span>
+                    <span>～</span>
 
-                <input type="time"
-                    name="corrected_end_time"
-                    value="{{ optional($attendance->left_at)->format('H:i') }}"
-                    {{ $isPending ? 'readonly' : '' }}>
+                    <div class="time-input-group">
+                        <input type="time"
+                            name="corrected_end_time"
+                            value="{{ old('corrected_end_time', optional($attendance->left_at)->format('H:i')) }}"
+                            {{ $isPending ? 'readonly' : '' }}>
+                        @error('corrected_end_time')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -58,26 +70,43 @@
         @for ($i = 0; $i < $maxBreaks; $i++)
             <div class="detail-row">
                 <label>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</label>
-                <div class="time-pair">
-                    <input type="time"
-                        name="breaks[{{ $i }}][start]"
-                        value="{{ $breaks[$i]['start'] ?? '' }}"
-                        {{ $isPending ? 'readonly' : '' }}>
+                <div class="input-block">
+                    <div class="time-pair">
+                        <div class="time-input-group">
+                            <input type="time"
+                                name="breaks[{{ $i }}][start]"
+                                value="{{ old("breaks.$i.start", $breaks[$i]['start'] ?? '') }}"
+                                {{ $isPending ? 'readonly' : '' }}>
+                            @error("breaks.$i.start")
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <span>～</span>
+                        <span>～</span>
 
-                    <input type="time"
-                        name="breaks[{{ $i }}][end]"
-                        value="{{ $breaks[$i]['end'] ?? '' }}"
-                        {{ $isPending ? 'readonly' : '' }}>
+                        <div class="time-input-group">
+                            <input type="time"
+                                name="breaks[{{ $i }}][end]"
+                                value="{{ old("breaks.$i.end", $breaks[$i]['end'] ?? '') }}"
+                                {{ $isPending ? 'readonly' : '' }}>
+                            @error("breaks.$i.end")
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
             </div>
         @endfor
 
         <div class="detail-row">
             <label>備考</label>
-            <textarea name="note"
-                    {{ $isPending ? 'readonly' : '' }}>{{ $attendance->note }}</textarea>
+            <div class="input-block">
+                <textarea name="note"
+                    {{ $isPending ? 'readonly' : '' }}>{{ old('note', $attendance->note) }}</textarea>
+                @error('note')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
 
         @if (!$isPending)

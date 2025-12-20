@@ -39,7 +39,7 @@ body {
 /* 各項目の行 */
 .detail-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     padding: 12px 0;
     gap: 20px;
@@ -82,12 +82,41 @@ body {
     color: #333;
 }
 
+.input-block {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+}
+
 /* 出勤・退勤の横並び */
 .time-pair {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 6px;
     flex: 1;
+    flex-wrap: wrap;
+}
+
+.time-pair span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 15px;
+    color: #000;
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+}
+
+.time-input-group input[type="time"] {
+    width: 140px;
+    flex: unset;
 }
 
 /* 休憩行（縦並び） */
@@ -107,13 +136,16 @@ body {
     color: #555;
 }
 
-.break-row input[type="time"] {
-    width: 140px;
-}
-
 input[type="time"]::-webkit-calendar-picker-indicator {
     display: none;
     -webkit-appearance: none;
+}
+
+input[type="time"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
 }
 
 .detail-row textarea {
@@ -158,6 +190,12 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     color: #d9534f;
     font-weight: bold;
     text-align: right;
+}
+
+.error-message {
+    color: #d9534f;
+    font-size: 13px;
+    margin-top: 4px;
 }
 
 /* タブレットサイズ以下 */
