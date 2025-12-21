@@ -78,9 +78,9 @@ php artisan db:seed
 
 ## テストアカウント
 
-name: 管理者
-email: admin@example.com
-password: password1234
+- name: 管理者
+- email: admin@example.com
+- password: password1234
 
 ## URL
 
