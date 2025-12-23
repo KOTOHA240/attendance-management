@@ -63,6 +63,11 @@ php artisan migrate
 php artisan db:seed
 ```
 
+## メール認証
+
+mailhog を使用しています。
+localhost:8025 にアクセスして認証メールを確認します。
+
 ## 使用技術
 
 - PHP8.2.29
@@ -85,6 +90,7 @@ php artisan db:seed
 ## URL
 
 - 開発環境：http://localhost/
+- 一般ユーザーログイン: http://localhost/login
 - 管理者ログイン: http://localhost/admin/login
 - phpMyAdmin:：http://localhost:8080/
 
