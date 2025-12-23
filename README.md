@@ -87,6 +87,10 @@ localhost:8025 にアクセスして認証メールを確認します。
 - email: admin@example.com
 - password: password1234
 
+- name: 一般ユーザー
+- email: user@example.com
+- password: password0000
+
 ## URL
 
 - 開発環境：http://localhost/
