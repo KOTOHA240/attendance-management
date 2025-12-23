@@ -82,23 +82,28 @@ class StampCorrectionRequestController extends Controller
             $requestItem = StampCorrectionRequest::with('attendance')->findOrFail($id);
             $attendance = $requestItem->attendance;
 
-            // 勤怠データを修正後の内容で上書き
+            $originalDate = $attendance->started_at
+                ? $attendance->started_at->format('Y-m-d')
+                : $requestItem->target_date;
+
             if ($requestItem->corrected_start_time) {
-                $attendance->started_at = $requestItem->corrected_start_time;
+                $attendance->started_at = $originalDate . ' ' . $requestItem->corrected_start_time;
             }
+
             if ($requestItem->corrected_end_time) {
-                $attendance->left_at = $requestItem->corrected_end_time;
+                $attendance->left_at = $originalDate . ' ' . $requestItem->corrected_end_time;
             }
+
             if ($requestItem->corrected_breaks) {
                 $attendance->breaks = $requestItem->corrected_breaks;
             }
+
             if ($requestItem->note) {
                 $attendance->note = $requestItem->note;
             }
 
             $attendance->save();
 
-            // 申請を承認済みに更新
             $requestItem->status = 'approved';
             $requestItem->save();
         });

@@ -24,18 +24,22 @@
         <div class="detail-row">
             <label>日付</label>
             <div class="date-pair">
-                <span>{{ $attendance->date ? $attendance->date->format('Y年n月j日') : '' }}</span>
+                <span>
+                    @if($attendance->started_at)
+                        {{ $attendance->started_at->format('Y年n月j日') }}
+                    @endif
+                </span>
                 <input type="hidden" name="date"
-                        value="{{ $attendance->date ? $attendance->date->format('Y-m-d') : now()->format('Y-m-d') }}">
+                        value="{{ $attendance->started_at ? $attendance->started_at->format('Y-m-d') : now()->format('Y-m-d') }}">
             </div>
         </div>
 
         <div class="detail-row">
             <label>出勤・退勤</label>
             <div class="time-pair">
-                <input type="time" name="started_at" value="{{ optional($attendance->started_at)->format('H:i') }}">
+                <input type="time" name="started_at" value="{{ ($attendance->started_at &&  $attendance->started_at->format('H:i') !== '00:00') ? $attendance->started_at->format('H:i') : '' }}">
                 <span>～</span>
-                <input type="time" name="left_at" value="{{ optional($attendance->left_at)->format('H:i') }}">
+                <input type="time" name="left_at" value="{{ ($attendance->left_at && $attendance->left_at->format('H:i') !== '00:00') ? $attendance->left_at->format('H:i') : '' }}">
             </div>
         </div>
 

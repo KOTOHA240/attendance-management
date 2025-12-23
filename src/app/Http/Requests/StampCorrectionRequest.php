@@ -24,6 +24,8 @@ class StampCorrectionRequest extends FormRequest
     public function rules()
     {
         return [
+            'attendance_id' => ['required', 'integer', 'exists:attendances,id'],
+            'target_date' => ['required', 'date'],
             'corrected_start_time' => ['nullable', 'date_format:H:i'],
             'corrected_end_time'   => ['nullable', 'date_format:H:i'],
             'breaks.*.start'       => ['nullable', 'date_format:H:i'],

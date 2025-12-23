@@ -40,9 +40,13 @@
         </div>
     </div>
 
-    <form method="POST" action="{{ route('stamp_correction_request.approve.execute', $request->id) }}" class="approve-form">
-        @csrf
-        <button type="submit" class="submit-button">承認</button>
-    </form>
+    @if($request->status === 'pending')
+        <form method="POST" action="{{ route('stamp_correction_request.approve.execute', $request->id) }}" class="approve-form">
+            @csrf
+            <button type="submit" class="submit-button">承認</button>
+        </form>
+    @elseif($request->status === 'approved')
+        <div class="approve-label">承認済み</div>
+    @endif
 </div>
 @endsection

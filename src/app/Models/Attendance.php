@@ -25,7 +25,6 @@ class Attendance extends Model
 
     protected $casts = [
         'breaks' => 'array',
-        'date' => 'date',
         'started_at' => 'datetime',
         'break_started_at' => 'datetime',
         'break_ended_at' => 'datetime',

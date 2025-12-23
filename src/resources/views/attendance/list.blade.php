@@ -35,8 +35,12 @@
             <tbody>
                 @foreach ($attendances as $attendance)
                     <tr>
-                        <td>{{ \Carbon\Carbon::parse($attendance->date)->isoFormat('MM/DD(dd)') }}</td>
-                        <td>{{ optional($attendance->started_at)->format('H:i') }}</td>
+                        <td>{{ optional($attendance->started_at)->isoFormat('MM/DD(dd)') }}</td>
+                        <td>
+                            @if ($attendance->started_at && $attendance->started_at->format('H:i') !== '00:00')
+                                {{ $attendance->started_at->format('H:i') }}
+                            @endif
+                        </td>
                         <td>{{ optional($attendance->left_at)->format('H:i') }}</td>
                         <td>{{ $attendance->break_time ?? '' }}</td>
                         <td>{{ $attendance->work_time ?? '' }}</td>

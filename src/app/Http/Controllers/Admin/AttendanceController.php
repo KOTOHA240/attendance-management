@@ -20,7 +20,7 @@ class AttendanceController extends Controller
         $nextDate = $targetDate->copy()->addDay();
 
         $attendances = \App\Models\Attendance::with('user')
-            ->whereDate('date', $targetDate)
+            ->whereDate('started_at', $targetDate)
             ->approvedOrNormal()
             ->get();
 
@@ -47,12 +47,12 @@ class AttendanceController extends Controller
 
         // 勤怠データを取得（例: 月単位で絞り込み）
         $attendanceData = $user->attendances()
-            ->whereMonth('date', $targetDate->month)
-            ->whereYear('date', $targetDate->year)
+            ->whereMonth('started_at', $targetDate->month)
+            ->whereYear('started_at', $targetDate->year)
             ->approvedOrNormal()
             ->get()
             ->keyBy(function($item) {
-                return $item->date->format('Y-m-d');
+                return $item->started_at->format('Y-m-d');
             });
         
         $attendances = [];
@@ -79,11 +79,10 @@ class AttendanceController extends Controller
     {
         $user = User::findOrFail($userId);
 
-        $attendance = $user->attendances()->whereDate('date', $date)->first();
+        $attendance = $user->attendances()->whereDate('started_at', $date)->first();
 
         if (!$attendance) {
             $attendance = new \App\Models\Attendance([
-                'date' => $date,
                 'started_at' => null,
                 'left_at' => null,
                 'break_time' => null,
@@ -97,28 +96,16 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
+        $date = Carbon::parse($request->input('date'));
+
         $attendance = new \App\Models\Attendance();
         $attendance->user_id   = $request->input('user_id');
-        $attendance->date      = $request->input('date');
-        $attendance->started_at= $request->input('started_at');
-        $attendance->left_at   = $request->input('left_at');
-        $attendance->note      = $request->input('note');
-        $attendance->breaks    = $request->input('breaks'); // JSONカラムならそのまま保存
-
-        $attendance->save();
-
-        return redirect()->route('admin.attendance.detail', [
-            'userId' => $attendance->user_id,
-            'date'   => $attendance->date
-        ])->with('success', '勤怠情報を新規登録しました');
-    }
-
-    public function update(Request $request, $id)
-    {
-        $attendance = \App\Models\Attendance::findOrFail($id);
-
-        $attendance->started_at= $request->input('started_at');
-        $attendance->left_at   = $request->input('left_at');
+        $attendance->started_at = $request->input('started_at')
+            ? Carbon::parse($date->format('Y-m-d').' '.$request->input('started_at'))
+            : null;
+        $attendance->left_at = $request->input('left_at') 
+            ? Carbon::parse($date->format('Y-m-d').' '.$request->input('left_at')) 
+            : null;
         $attendance->note      = $request->input('note');
         $attendance->breaks    = $request->input('breaks');
 
@@ -126,7 +113,30 @@ class AttendanceController extends Controller
 
         return redirect()->route('admin.attendance.detail', [
             'userId' => $attendance->user_id,
-            'date'   => $attendance->date
+            'date'   => $attendance->started_at?->format('Y-m-d')
+        ])->with('success', '勤怠情報を新規登録しました');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $attendance = Attendance::findOrFail($id);
+
+        $date = $attendance->started_at ? $attendance->started_at->format('Y-m-d') : now()->format('Y-m-d');
+
+        $attendance->started_at = $request->input('started_at')
+            ? Carbon::parse($date . ' ' . $request->input('started_at'))
+            : null;
+        $attendance->left_at = $request->input('left_at')
+            ? Carbon::parse($date . ' ' . $request->input('left_at'))
+            : null;
+        $attendance->note      = $request->input('note');
+        $attendance->breaks    = $request->input('breaks');
+
+        $attendance->save();
+
+        return redirect()->route('admin.attendance.detail', [
+            'userId' => $attendance->user_id,
+            'date'   => $date,
         ])->with('success', '勤怠情報を更新しました');
     }
 
@@ -146,10 +156,10 @@ class AttendanceController extends Controller
 
         // 月内の勤怠データをまとめて取得
         $attendanceData = $user->attendances()
-            ->whereMonth('date', $targetDate->month)
-            ->whereYear('date', $targetDate->year)
+            ->whereMonth('started_at', $targetDate->month)
+            ->whereYear('started_at', $targetDate->year)
             ->get()
-            ->keyBy(fn($item) => $item->date->format('Y-m-d'));
+            ->keyBy(fn($item) => $item->started_at->format('Y-m-d'));
 
         $response = new StreamedResponse(function () use ($period, $attendanceData) {
             $handle = fopen('php://output', 'w');
@@ -193,15 +203,14 @@ class AttendanceController extends Controller
     public function save(Request $request)
     {
         if ($request->filled('attendance_id')) {
-            // 既存データの修正
             $attendance = Attendance::find($request->attendance_id);
         } else {
-            // 新規作成
             $attendance = new Attendance();
-            $attendance->user_id = $request->input('user_id'); // 管理者が対象ユーザーを指定
+            $attendance->user_id = $request->input('user_id');
         }
 
-        $attendance->date = Carbon::parse($request->input('date'));
+        $date = Carbon::parse($request->input('date'));
+
         $attendance->started_at = $request->input('started_at')
             ? Carbon::parse($attendance->date->format('Y-m-d').' '.$request->input('started_at'))
             : null;

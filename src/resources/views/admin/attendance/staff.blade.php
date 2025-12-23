@@ -42,7 +42,13 @@
                 @forelse ($attendances as $attendance)
                     <tr>
                         <td>{{ $attendance['date']->isoFormat('MM/DD(dd)') }}</td>
-                        <td>{{ $attendance['started_at'] ? $attendance['started_at']->format('H:i') :  '' }}</td>
+                        <td>
+                            @if($attendance['started_at'] && $attendance['started_at']->format('H:i') !== '00:00')
+                                {{ $attendance['started_at']->format('H:i') }}
+                            @else
+                                {{-- 空欄 --}}
+                            @endif
+                        </td>
                         <td>{{ $attendance['left_at'] ? $attendance['left_at']->format('H:i') : '' }}</td>
                         <td>{{ $attendance['break_time'] ?? '' }}</td>
                         <td>{{ $attendance['work_time'] ?? '' }}</td>
@@ -66,4 +72,3 @@
     </div>
 </div>
 @endsection
-

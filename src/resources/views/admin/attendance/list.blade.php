@@ -41,7 +41,7 @@
                         <td>
                             <a href="{{ route('admin.attendance.detail', [
                                 'userId' => $attendance->user_id,
-                                'date' => $attendance->date->format('Y-m-d')
+                                'date' => optional($attendance->started_at)->format('Y-m-d')
                                 ]) }}" class="detail-link">詳細</a>
                         </td>
                     </tr>
@@ -53,3 +53,4 @@
     </div>
 </div>
 @endsection
+

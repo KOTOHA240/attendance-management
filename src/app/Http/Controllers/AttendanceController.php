@@ -16,7 +16,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
 
         $todayAttendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', today())
+            ->whereDate('started_at', today())
             ->first();
 
         if (! $todayAttendance) {
@@ -45,10 +45,25 @@ class AttendanceController extends Controller
         $user->status = '勤務中';
         $user->save();
 
-        Attendance::updateOrCreate(
-            ['user_id' => $user->id, 'date' => today()],
-            ['started_at' => now()]
-        );
+        $today = now()->format('Y-m-d');
+
+        // 今日の枠レコードを確実に取得
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('started_at', $today)
+            ->first();
+
+        if ($attendance) {
+            // 枠レコードを更新
+            $attendance->started_at = now();
+            $attendance->save();
+        } else {
+            // 念のため新規作成（通常は不要）
+            Attendance::create([
+                'user_id' => $user->id,
+                'started_at' => now(),
+                'breaks' => [],
+            ]);
+        }
 
         return redirect()->route('attendance.index');
     }
@@ -59,10 +74,14 @@ class AttendanceController extends Controller
         $user->status = '勤務終了';
         $user->save();
 
-        Attendance::updateOrCreate(
-            ['user_id' => $user->id, 'date' => today()],
-            ['left_at' => now()]
-        );
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('started_at', today())
+            ->first();
+
+        if ($attendance) {
+            $attendance->left_at = now();
+            $attendance->save();
+        }
 
         return redirect()->route('attendance.index');
     }
@@ -72,7 +91,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
 
         $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', today())
+            ->whereDate('started_at', today())
             ->firstOrFail();
 
         $breaks = $attendance->breaks ?? [];
@@ -96,7 +115,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
 
         $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('date', today())
+            ->whereDate('started_at', today())
             ->firstOrFail();
 
         $breaks = $attendance->breaks ?? [];
@@ -132,10 +151,9 @@ class AttendanceController extends Controller
             $attendance = Attendance::firstOrCreate(
                 [
                     'user_id' => $user->id,
-                    'date'    => $date->toDateString(),
+                    'started_at' => $date->copy()->startOfDay(),
                 ],
                 [
-                    'started_at' => null,
                     'left_at'    => null,
                     'breaks'     => [],
                     'note'       => '',
@@ -178,11 +196,29 @@ class AttendanceController extends Controller
         $isPending = $latestRequest && $latestRequest->status === 'pending';
 
         if ($isPending) {
-            $attendance->started_at = $latestRequest->corrected_start_time ?? $attendance->started_at;
-            $attendance->left_at    = $latestRequest->corrected_end_time ?? $attendance->left_at;
-            $attendance->note       = $latestRequest->note ?? $attendance->note;
+            if (!empty($latestRequest->corrected_start_time)) { 
+                if ($attendance->started_at) { 
+                    $attendance->started_at = $attendance->started_at 
+                        ->copy() 
+                        ->setTimeFromTimeString($latestRequest->corrected_start_time); 
+                } 
+            }
 
-            $attendance->breaks     = $latestRequest->corrected_breaks ?? $attendance->breaks;
+            if (!empty($latestRequest->corrected_end_time)) {
+                if ($attendance->left_at) {
+                    $attendance->left_at = $attendance->left_at 
+                        ->copy() 
+                        ->setTimeFromTimeString($latestRequest->corrected_end_time); 
+                } 
+            }
+
+            if (!empty($latestRequest->corrected_breaks)) {
+                 $attendance->breaks = $latestRequest->corrected_breaks; 
+            }
+
+            if (!empty($latestRequest->note)) { 
+                $attendance->note = $latestRequest->note;
+            }
         }
 
         return view('attendance.detail', [
@@ -204,12 +240,16 @@ class AttendanceController extends Controller
 
         if ($request->filled('started_at')) {
             $attendance->started_at =
-                $attendance->date->copy()->setTimeFromTimeString($request->started_at);
+                $attendance->started_at
+                    ? $attendance->started_at->copy()->setTimeFromTimeStrig($request->started_at)
+                    :now()->setTimeFirmTimeString($request->started_at);
         }
 
         if ($request->filled('left_at')) {
             $attendance->left_at =
-                $attendance->date->copy()->setTimeFromTimeString($request->left_at);
+                $attendance->left_at
+                    ? $attendance->started_at->copy()->setTimeFromTimeString($request->left_at)
+                    : now()->setTimeFormTimeString($request->left_at);
         }
 
         $attendance->note = $request->input('note');
@@ -220,7 +260,9 @@ class AttendanceController extends Controller
         StampCorrectionRequest::create([
             'user_id' => auth()->id(),
             'attendance_id' => $attendance->id,
-            'target_date' => $attendance->date,
+            'target_date' => $attendance->started_at
+                ? $attendance->started_at->toDateString()
+                : null,
             'reason' => $request->note,
             'status' => 'pending',
         ]);

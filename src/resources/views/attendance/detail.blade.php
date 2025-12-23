@@ -19,7 +19,7 @@
     @endif
 
         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
-        <input type="hidden" name="target_date" value="{{ optional($attendance->date)->format('Y-m-d') }}">
+        <input type="hidden" name="target_date" value="{{ optional($attendance->started_at)->format('Y-m-d') }}">
 
         <div class="detail-row">
             <label>名前</label>
@@ -28,9 +28,7 @@
 
         <div class="detail-row">
             <label>日付</label>
-            <span>{{ optional($attendance->date)->format('Y年n月j日') }}</span>
-            <input type="hidden" name="date"
-                    value="{{ optional($attendance->date)->format('Y-m-d') }}">
+            <span>{{ optional($attendance->started_at)->format('Y年n月j日') }}</span>
         </div>
 
         <div class="detail-row">
@@ -40,7 +38,11 @@
                     <div class="time-input-group">
                         <input type="time"
                             name="corrected_start_time"
-                            value="{{ old('corrected_start_time', optional($attendance->started_at)->format('H:i')) }}"
+                            value="{{ old('corrected_start_time',
+                                ($attendance->started_at && $attendance->started_at->format('H:i') !== '00:00')
+                                ? $attendance->started_at->format('H:i')
+                                : ''
+                            ) }}"
                             {{ $isPending ? 'readonly' : '' }}>
                         @error('corrected_start_time')
                             <div class="error-message">{{ $message }}</div>
@@ -52,7 +54,11 @@
                     <div class="time-input-group">
                         <input type="time"
                             name="corrected_end_time"
-                            value="{{ old('corrected_end_time', optional($attendance->left_at)->format('H:i')) }}"
+                            value="{{ old('corrected_end_time',
+                                ($attendance->left_at && $attendance->left_at->format('H:i') !== '00:00')
+                                ? $attendance->left_at->format('H:i')
+                                : ''
+                            ) }}"
                             {{ $isPending ? 'readonly' : '' }}>
                         @error('corrected_end_time')
                             <div class="error-message">{{ $message }}</div>
